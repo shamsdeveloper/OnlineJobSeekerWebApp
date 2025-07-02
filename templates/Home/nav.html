@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online Job Seeker Website</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #007f5f;
+      --secondary-color: #001219;
+      --accent-color: #00b4d8;
+      --bg-color: #f1f5f9;
+      --text-color: #212529;
+      --muted-color: #6c757d;
+      --gradient: linear-gradient(135deg, #007f5f, #00b4d8);
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 0;
+      color: var(--text-color);
+    }
+
+    /* Updated Navbar Design */
+    .navbar {
+      background: rgba(0, 127, 95, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      padding: 1rem 2rem;
+      border-bottom: 2px solid rgba(0, 180, 216, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-brand .bi {
+      margin-right: 0.6rem;
+      font-size: 1.8rem;
+      color: #caff8a;
+    }
+
+    .navbar-nav .nav-link {
+      font-weight: 500;
+      color: #ffffff;
+      position: relative;
+      margin-left: 1rem;
+      padding: 0.5rem 0.75rem;
+      border-radius: 8px;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .navbar-nav .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: #caff8a;
+      transform: translateY(-1px);
+    }
+
+    .navbar-toggler {
+      border: none;
+    }
+
+    .navbar-toggler:focus {
+      box-shadow: none;
+    }
+
+    .hero {
+      background-color: #fff;
+      margin: 4rem auto;
+      padding: 4rem 2rem;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 950px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 2.75rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .hero p {
+      color: var(--muted-color);
+      font-size: 1.2rem;
+      margin-top: 1rem;
+    }
+
+    .upload-section {
+      background-color: #e9f5f1;
+      padding: 2rem;
+      border-radius: 12px;
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    footer {
+      background-color: var(--secondary-color);
+      color: white;
+      padding: 1rem 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Modernized Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'My_Home' %}">
+      <i class="bi bi-shield-lock"></i> Online Job Seeker WebApp
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'My_Home' %}">
+            <i class="bi bi-house-door"></i> Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{%url 'My_Aboutus' %}">
+            <i class="bi bi-info-circle"></i> About Us
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{%url 'My_Services' %}">
+            <i class="bi bi-tools"></i> Services
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'My_Virtual_Tour' %}">
+            <i class="bi bi-binoculars"></i> Virtual Tours
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'contact' %}">
+            <i class="bi bi-envelope"></i> Contacts
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<!-- Bootstrap Script -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

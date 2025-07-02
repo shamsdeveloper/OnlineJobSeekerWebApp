@@ -1,0 +1,63 @@
+{% extends 'Employee/base.html' %}
+{% load static %}
+{% block title %}Virtual Tour Management{% endblock %}
+{% block content %}
+<div class="container py-5" style="margin-top:-20px; width: calc(100% - 50px);">
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="card shadow-lg border-0 rounded-lg" style="background-color: rgba(255, 255, 255, 0.85);">
+                <div class="card-header bg-dark text-white text-center py-4 rounded-top-lg">
+                    <h4 class="mb-0">Add Virtual Tour Company</h4>
+                </div>
+                <div class="card-body p-4" style="background-color: rgb(32, 145, 145);">
+                    <form method="POST" enctype="multipart/form-data" id="companyForm">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="name" class="form-label text-white">Company Name</label>
+                            <input type="text" name="name" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label text-white">Description</label>
+                            <textarea name="description" class="form-control" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="location" class="form-label text-white">Location</label>
+                            <input type="text" name="location" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="website" class="form-label text-white">Website</label>
+                            <input type="url" name="website" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="virtual_tour_url" class="form-label text-white">Virtual Tour URL</label>
+                            <input type="url" name="virtual_tour_url" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="founded_date" class="form-label text-white">Founded Date</label>
+                            <input type="date" name="founded_date" class="form-control">
+                        </div>
+                        <div class="mb-3">
+                            <label for="logo" class="form-label text-white">Company Logo</label>
+                            <input type="file" name="logo" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-light w-100 fw-bold">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SweetAlert -->
+{% if messages %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: '{{ messages.0 }}',
+        showConfirmButton: false,
+        timer: 2000
+    });
+</script>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,193 @@
+{% extends 'Home/base.html' %}
+{% load static %}
+{% block title %}Stay Connected & Contact Us{% endblock %}
+{% block content %}
+
+<!-- Modern Contact Section with Floating Labels and Enhanced UI -->
+<section class="py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <!-- Contact Form Card with Floating Labels -->
+            <div class="col-lg-8 col-xl-6">
+                <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                    <!-- Card Header with Gradient Background -->
+                    <div class="card-header py-4 text-white" style="background: linear-gradient(to right, #4e54c8, #8f94fb);">
+                        <h3 class="text-center mb-0 fw-bold">Get in Touch</h3>
+                        <p class="text-center mb-0 opacity-75">We'll respond within 24 hours</p>
+                    </div>
+                    
+                    <!-- Card Body with Predictive Form Elements -->
+                    <div class="card-body p-5">
+                        <form action="/my_contact/" method="POST" id="contactForm" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Name Field with Floating Label -->
+                            <div class="form-floating mb-4">
+                                <input type="text" class="form-control rounded-3" id="name" name="name" 
+                                       placeholder="John Doe" required
+                                       pattern="[A-Za-z ]{3,}" 
+                                       title="Please enter at least 3 characters (letters only)">
+                                <label for="name" class="text-muted">Full Name</label>
+                                <div class="invalid-feedback">
+                                    Please provide a valid name (min 3 letters)
+                                </div>
+                            </div>
+                            
+                            <!-- Email Field with Floating Label -->
+                            <div class="form-floating mb-4">
+                                <input type="email" class="form-control rounded-3" id="email" name="email" 
+                                       placeholder="name@example.com" required>
+                                <label for="email" class="text-muted">Email Address</label>
+                                <div class="invalid-feedback">
+                                    Please provide a valid email address
+                                </div>
+                            </div>
+                            
+                            <!-- Phone Field with Floating Label and Input Mask -->
+                            <div class="form-floating mb-4">
+                                <input type="tel" class="form-control rounded-3" id="phone" name="phone" 
+                                       placeholder="+1 (123) 456-7890" required
+                                       pattern="[0-9]{10,15}" 
+                                       title="Please enter a valid phone number (10-15 digits)">
+                                <label for="phone" class="text-muted">Phone Number</label>
+                                <div class="invalid-feedback">
+                                    Please provide a valid phone number
+                                </div>
+                            </div>
+                            
+                            <!-- Message Field with Floating Label -->
+                            <div class="form-floating mb-4">
+                                <textarea class="form-control rounded-3" id="message" name="message" 
+                                          placeholder="Your message here" style="height: 150px" required
+                                          minlength="10" maxlength="500"></textarea>
+                                <label for="message" class="text-muted">How can we help you?</label>
+                                <div class="invalid-feedback">
+                                    Please enter a message (10-500 characters)
+                                </div>
+                                <div class="form-text text-end">
+                                    <span id="charCount">0</span>/500 characters
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Button with Loading State -->
+                            <div class="d-grid">
+                                <button class="btn btn-primary btn-lg rounded-pill py-3 fw-bold" type="submit" id="submitBtn">
+                                    <span class="submit-text">Send Message</span>
+                                    <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Card Footer with Additional Info -->
+                    <div class="card-footer bg-light py-3 text-center">
+                        <small class="text-muted">
+                            <i class="fas fa-lock me-1"></i> Your information is secure and will never be shared
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<br>
+<!-- Modern Styles and Interactive Elements -->
+<style>
+    .form-control {
+        transition: all 0.3s;
+        border: 1px solid #dee2e6;
+    }
+    
+    .form-control:focus {
+        border-color: #8f94fb;
+        box-shadow: 0 0 0 0.25rem rgba(142, 148, 251, 0.25);
+    }
+    
+    .card {
+        transition: transform 0.3s;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    
+    #charCount {
+        font-weight: bold;
+        color: #4e54c8;
+    }
+    
+    .invalid-feedback {
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+    
+    .was-validated .form-control:invalid ~ .invalid-feedback,
+    .was-validated .form-control:valid ~ .invalid-feedback {
+        opacity: 1;
+    }
+</style>
+
+<!-- Enhanced JavaScript for Form Interaction -->
+<script>
+    // Character counter for message textarea
+    document.getElementById('message').addEventListener('input', function() {
+        const charCount = this.value.length;
+        document.getElementById('charCount').textContent = charCount;
+        
+        // Visual feedback when approaching limit
+        if (charCount > 450) {
+            document.getElementById('charCount').style.color = '#dc3545';
+        } else {
+            document.getElementById('charCount').style.color = '#4e54c8';
+        }
+    });
+    
+    // Form submission handling
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+        const form = this;
+        const submitBtn = document.getElementById('submitBtn');
+        const spinner = submitBtn.querySelector('.spinner-border');
+        const submitText = submitBtn.querySelector('.submit-text');
+        
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+            form.classList.add('was-validated');
+        } else {
+            // Show loading state
+            submitText.textContent = 'Sending...';
+            spinner.classList.remove('d-none');
+            submitBtn.disabled = true;
+        }
+    });
+    
+    // Input masking for phone number
+    document.getElementById('phone').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+</script>
+
+<!-- SweetAlert Success Message -->
+{% if show_success %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            title: 'Thanks for contacting!',
+            text: 'We will get back to you shortly.',
+            icon: 'success',
+            confirmButtonColor: '#4e54c8',
+            confirmButtonText: 'OK',
+            backdrop: `
+                rgba(78,84,200,0.4)
+                url("{% static 'images/confetti.gif' %}")
+                center top
+                no-repeat
+            `
+        });
+    });
+</script>
+{% endif %}
+
+
+
+{% endblock %}

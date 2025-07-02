@@ -1,0 +1,144 @@
+{% extends 'Employee/base.html' %}
+{% load static %}
+{% block title %}{{ form.instance.pk|yesno:"Edit Job,Post a Job" }}{% endblock %}
+{% block content %}
+<div class="container py-5" style="margin-top:-20px; width: calc(100% - 50px);">
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="card shadow-lg border-0 rounded-lg" style="background-color: rgba(255, 255, 255, 0.85);">
+                <div class="card-header bg-dark text-white text-center py-4 rounded-top-lg"
+                     style="background-color: rgba(12, 12, 12, 0.9);">
+                    <h4 class="mb-0">{{ form.instance.pk|yesno:"Edit Job,Post a Job" }}</h4>
+                </div>
+
+                <div class="card-body p-4" style="background-color: rgb(32, 145, 145);">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row g-3">
+
+                            <div class="col-md-6">
+                                <label class="form-label text-white">Job Title</label>
+                                {{ form.title }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label text-white">Company</label>
+                                {{ form.company }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label text-white">Location</label>
+                                {{ form.location }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label text-white">Job Type</label>
+                                {{ form.job_type }}
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label text-white">Skills Required</label>
+                                {{ form.skills_required }}
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label text-white">Job Description</label>
+                                {{ form.description }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label text-white">Salary Range</label>
+                                {{ form.salary_range }}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label text-white">Expiration Date</label>
+                                {{ form.expiration_date }}
+                            </div>
+
+                            <div class="col-md-6 form-check mt-4">
+                                {{ form.is_active }}
+                                <label class="form-check-label text-white">Active</label>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 text-center">
+                            <button type="submit" class="btn btn-success px-5">Save</button>
+                            <a href="{% url 'job_create' %}" class="btn btn-secondary px-5 ms-2">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Job Table Section -->
+<div class="container mt-0" style="width: calc(100% - 50px);">
+    <div class="card shadow-lg border-0 rounded-lg">
+        <div class="card-header bg-primary text-white text-center py-3">
+            <h4 class="mb-0">Posted Jobs</h4>
+        </div>
+        <div class="card-body bg-light">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Title</th>
+                            <th>Company</th>
+                            <th>Location</th>
+                            <th>Type</th>
+                            <th>Salary Range</th>
+                            <th>Expiration</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for job in jobs %}
+                            <tr>
+                                <td>{{ job.title }}</td>
+                                <td>{{ job.company }}</td>
+                                <td>{{ job.location }}</td>
+                                <td>{{ job.job_type }}</td>
+                                <td>{{ job.salary_range }}</td>
+                                <td>{{ job.expiration_date }}</td>
+                                <td>
+                                    {% if job.is_active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'job_edit' job.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                    <a href="{% url 'job_delete' job.pk %}" class="btn btn-sm btn-danger"
+                                       onclick="return confirm('Are you sure you want to delete this job?');">Delete</a>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr><td colspan="7" class="text-center">No jobs posted yet.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% if messages %}
+  <script>
+    {% for message in messages %}
+      Swal.fire({
+        toast: true,
+        position: 'top',
+        icon: '{{ message.tags }}',
+        title: '{{ message|escapejs }}',
+        showConfirmButton: false,
+        timer: 3000
+      });
+    {% endfor %}
+  </script>
+{% endif %}
+{% endblock %}

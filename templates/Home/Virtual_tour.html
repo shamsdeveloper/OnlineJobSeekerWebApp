@@ -1,0 +1,455 @@
+{% extends 'Home/base.html' %}
+{% load static %}
+{% block title %}Virtual Company Tours - NextGen Job Portal Malaysia{% endblock %}
+{% block content %}
+
+<!-- Virtual Tour Hero Section -->
+<section class="virtual-tour-hero bg-gradient-malaysia text-white py-5 bg-dark">
+  <div class="container py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold mb-4">Explore Malaysian Companies in <span class="text-warning">360°</span></h1>
+        <p class="lead mb-4">Experience workplaces across Malaysia without leaving your home. Our immersive virtual tours give you authentic insights into company cultures and environments.</p>
+        <div class="d-flex flex-wrap gap-3">
+          <a href="#featured-tours" class="btn btn-light btn-lg rounded-pill px-4">View Tours</a>
+          <a href="#how-it-works" class="btn btn-outline-light btn-lg rounded-pill px-4">How It Works</a>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <img src="{% static 'Images/virtual-tour-hero.png' %}" alt="Virtual Tour Illustration" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Tours Section -->
+<section id="featured-tours" class="py-5" style="background-color: aquamarine;">
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-bold mb-3">Featured <span class="text-primary">Malaysian</span> Companies</h2>
+      <p class="lead text-danger fw-bold">Explore workplaces from Kuala Lumpur to Penang</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Petronas Tour -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-0 shadow-sm hover-scale tour-card">
+          <div class="card-img-top position-relative">
+            <img src="{% static 'Images/petronas-tour.jpg' %}" class="card-img-top" alt="Petronas Twin Towers">
+            <div class="tour-badge bg-primary">Kuala Lumpur</div>
+            <div class="tour-type-badge">
+              <i class="fas fa-building"></i> Corporate Office
+            </div>
+          </div>
+          <div class="card-body">
+            <h3 class="h5">Petronas Twin Towers</h3>
+            <p class="text-muted">Experience Malaysia's iconic corporate headquarters with 360° views of KLCC.</p>
+            <div class="d-flex align-items-center mb-3">
+              <div class="me-3">
+                <i class="fas fa-users text-primary me-2"></i>
+                <span>500+ employees</span>
+              </div>
+              <div>
+                <i class="fas fa-industry text-primary me-2"></i>
+                <span>Oil & Gas</span>
+              </div>
+            </div>
+            <div class="tour-rating mb-3">
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star-half-alt text-warning"></i>
+              <span class="ms-2">4.7 (128 reviews)</span>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <a href="#" class="btn btn-primary w-100 rounded-pill">Start Virtual Tour</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grab HQ Tour -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-0 shadow-sm hover-scale tour-card">
+          <div class="card-img-top position-relative">
+            <img src="{% static 'Images/grab-tour.jpg' %}" class="card-img-top" alt="Grab Malaysia HQ">
+            <div class="tour-badge bg-success">Selangor</div>
+            <div class="tour-type-badge">
+              <i class="fas fa-laptop-code"></i> Tech Startup
+            </div>
+          </div>
+          <div class="card-body">
+            <h3 class="h5">Grab Malaysia Headquarters</h3>
+            <p class="text-muted">Explore Southeast Asia's leading superapp company with vibrant workspaces.</p>
+            <div class="d-flex align-items-center mb-3">
+              <div class="me-3">
+                <i class="fas fa-users text-success me-2"></i>
+                <span>1200+ employees</span>
+              </div>
+              <div>
+                <i class="fas fa-industry text-success me-2"></i>
+                <span>Technology</span>
+              </div>
+            </div>
+            <div class="tour-rating mb-3">
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <span class="ms-2">4.9 (95 reviews)</span>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <a href="#" class="btn btn-success w-100 rounded-pill">Start Virtual Tour</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Penang Tech Park -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-0 shadow-sm hover-scale tour-card">
+          <div class="card-img-top position-relative">
+            <img src="{% static 'Images/penang-tech.jpg' %}" class="card-img-top" alt="Penang Tech Park">
+            <div class="tour-badge bg-info">Penang</div>
+            <div class="tour-type-badge">
+              <i class="fas fa-microchip"></i> Electronics Hub
+            </div>
+          </div>
+          <div class="card-body">
+            <h3 class="h5">Penang Tech Park</h3>
+            <p class="text-muted">Tour Malaysia's Silicon Valley with multiple multinational tech companies.</p>
+            <div class="d-flex align-items-center mb-3">
+              <div class="me-3">
+                <i class="fas fa-users text-info me-2"></i>
+                <span>5000+ employees</span>
+              </div>
+              <div>
+                <i class="fas fa-industry text-info me-2"></i>
+                <span>Electronics</span>
+              </div>
+            </div>
+            <div class="tour-rating mb-3">
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <i class="fas fa-star text-warning"></i>
+              <span class="ms-2">5.0 (210 reviews)</span>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <a href="#" class="btn btn-info w-100 rounded-pill">Start Virtual Tour</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center mt-5">
+      <a href="#" class="btn btn-outline-primary btn-lg px-5 rounded-pill">View All Malaysian Companies</a>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section id="how-it-works" class="py-5" style="background-color:burlywood;">
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-bold mb-3">How <span class="text-primary">Virtual Tours</span> Work</h2>
+      <p class="lead text-success fw-bold">Experience Malaysian workplaces in 3 simple steps</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="card h-100 border-0 bg-white shadow-sm p-4 text-center">
+          <div class="icon-box bg-primary-light text-primary mx-auto mb-4">
+            <i class="fas fa-search fa-2x"></i>
+          </div>
+          <h3>1. Find Companies</h3>
+          <p>Browse through our curated list of Malaysian companies or search by industry, location, or company size.</p>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="card h-100 border-0 bg-white shadow-sm p-4 text-center">
+          <div class="icon-box bg-success-light text-success mx-auto mb-4">
+            <i class="fas fa-vr-cardboard fa-2x"></i>
+          </div>
+          <h3>2. Launch Tour</h3>
+          <p>Click on any company to start an immersive 360° virtual experience of their workplace environment.</p>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="card h-100 border-0 bg-white shadow-sm p-4 text-center">
+          <div class="icon-box bg-info-light text-info mx-auto mb-4">
+            <i class="fas fa-briefcase fa-2x"></i>
+          </div>
+          <h3>3. Apply Directly</h3>
+          <p>Find open positions during the tour and apply immediately with your profile or uploaded resume.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Benefits Section -->
+<section class="py-5">
+  <div class="container py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-5 mb-lg-0">
+        <img src="{% static 'Images/virtual-tour-benefits.jpg' %}" alt="Virtual Tour Benefits" class="img-fluid rounded shadow">
+      </div>
+      <div class="col-lg-6">
+        <h2 class="display-5 fw-bold mb-4">Benefits of <span class="text-primary">Virtual Tours</span></h2>
+        
+        <div class="d-flex mb-4">
+          <div class="flex-shrink-0">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+              <i class="fas fa-map-marker-alt"></i>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h5 class="mt-0">Explore Anywhere in Malaysia</h5>
+            <p>Visit companies across different states without travel expenses or time constraints.</p>
+          </div>
+        </div>
+        
+        <div class="d-flex mb-4">
+          <div class="flex-shrink-0">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+              <i class="fas fa-eye"></i>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h5 class="mt-0">Authentic Workplace Insights</h5>
+            <p>See actual office layouts, facilities, and work environments before applying.</p>
+          </div>
+        </div>
+        
+        <div class="d-flex mb-4">
+          <div class="flex-shrink-0">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+              <i class="fas fa-clock"></i>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h5 class="mt-0">Time-Saving Evaluation</h5>
+            <p>Quickly assess company culture and fit without multiple in-person visits.</p>
+          </div>
+        </div>
+        
+        <div class="d-flex">
+          <div class="flex-shrink-0">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+              <i class="fas fa-robot"></i>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h5 class="mt-0">AI-Powered Assistance</h5>
+            <p>Our chatbot guides you through tours and answers questions about companies in real-time.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 bg-primary text-white">
+  <div class="container py-5">
+    <h2 class="display-5 fw-bold text-center mb-5">Success <span class="text-warning">Stories</span> From Malaysia</h2>
+    
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 bg-primary-dark border-0">
+          <div class="card-body">
+            <div class="mb-4">
+              <i class="fas fa-quote-left fa-2x opacity-25"></i>
+            </div>
+            <p class="lead mb-4">"The virtual tour of Axiata's office helped me visualize the work environment. When I finally visited for my interview, it felt familiar!"</p>
+            <div class="d-flex align-items-center">
+              <img src="{% static 'Images/team2.jpg' %}" class="rounded-circle me-3" width="50" alt="Ahmad">
+              <div>
+                <h6 class="mb-0">Ahmad R.</h6>
+                <small class="text-white-50">Network Engineer, Kuala Lumpur</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card h-100 bg-primary-dark border-0">
+          <div class="card-body">
+            <div class="mb-4">
+              <i class="fas fa-quote-left fa-2x opacity-25"></i>
+            </div>
+            <p class="lead mb-4">"As a fresh graduate from Penang, virtual tours saved me so much time and money. I could explore KL companies without traveling."</p>
+            <div class="d-flex align-items-center">
+              <img src="{% static 'Images/team3.jpg' %}" class="rounded-circle me-3" width="50" alt="Priya">
+              <div>
+                <h6 class="mb-0">Priya S.</h6>
+                <small class="text-white-50">Marketing Executive, Penang</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card h-100 bg-primary-dark border-0">
+          <div class="card-body">
+            <div class="mb-4">
+              <i class="fas fa-quote-left fa-2x opacity-25"></i>
+            </div>
+            <p class="lead mb-4">"Our Johor manufacturing facility gets more qualified applicants since we added the virtual tour. Candidates know exactly what to expect."</p>
+            <div class="d-flex align-items-center">
+              <img src="{% static 'Images/team3.jpg' %}" class="rounded-circle me-3" width="50" alt="Mr. Lim">
+              <div>
+                <h6 class="mb-0">Mr. Lim</h6>
+                <small class="text-white-50">HR Manager, Johor</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-dark text-white">
+  <div class="container py-5 text-center">
+    <h2 class="display-5 fw-bold mb-4">Ready to Explore Malaysian <span class="text-primary">Workplaces</span>?</h2>
+    <p class="lead mb-5">Join thousands of job seekers and employers using virtual tours to make better career decisions</p>
+    <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+      <a href="#" class="btn btn-primary btn-lg px-4 rounded-pill">Start Exploring Now</a>
+      <a href="#" class="btn btn-outline-light btn-lg px-4 rounded-pill">For Employers</a>
+    </div>
+  </div>
+</section>
+<br>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Malaysia-themed Gradient */
+  .bg-gradient-malaysia {
+    background: linear-gradient(135deg, #006233 0%, #cc0000 100%);
+  }
+  
+  /* Tour Card Styling */
+  .tour-card {
+    transition: all 0.3s ease;
+    border-radius: 15px;
+    overflow: hidden;
+  }
+  
+  .tour-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+  }
+  
+  .tour-badge {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: white;
+  }
+  
+  .tour-type-badge {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    background: rgba(255,255,255,0.9);
+    color: #333;
+  }
+  
+  /* Icon Boxes */
+  .icon-box {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .bg-primary-light {
+    background-color: rgba(58, 134, 255, 0.1);
+  }
+  
+  .bg-success-light {
+    background-color: rgba(40, 167, 69, 0.1);
+  }
+  
+  .bg-info-light {
+    background-color: rgba(23, 162, 184, 0.1);
+  }
+  
+  /* Primary Dark */
+  .bg-primary-dark {
+    background-color: #004225 !important; /* Darker Malaysia green */
+  }
+  
+  /* Rating Stars */
+  .tour-rating {
+    color: #ffc107;
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .display-4 {
+      font-size: 2.5rem;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Font Awesome -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<!-- Tour Animation -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Animate tour cards on scroll
+    const tourCards = document.querySelectorAll('.tour-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = "1";
+          entry.target.style.transform = "translateY(0)";
+        }
+      });
+    }, {threshold: 0.1});
+    
+    tourCards.forEach(card => {
+      card.style.opacity = "0";
+      card.style.transform = "translateY(20px)";
+      card.style.transition = "all 0.6s ease";
+      observer.observe(card);
+    });
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  });
+</script>
+{% endblock %}

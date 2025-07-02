@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JobSeeker Dashboard | JobSeeker Pro</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-500: #3a86ff;  /* Vibrant blue */
+      --primary-400: #2667cc;
+      --primary-300: #1a4d99;
+      --dark-900: #0a0a0a;     /* Deep black */
+      --dark-800: #121212;     /* Slightly lighter black */
+      --dark-700: #1e1e1e;     /* Card/dark surface */
+      --dark-600: #2d2d2d;     /* Borders */
+      --light-100: #f8f9fa;    /* White text */
+      --light-200: #e9ecef;    /* Secondary text */
+      --light-300: #adb5bd;    /* Disabled text */
+      --accent-green: #4cc9f0; /* Teal accent */
+      --accent-red: #f72585;   /* Pink accent */
+      --radius-md: 6px;
+      --transition: all 0.25s ease;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, var(--dark-900) 0%, var(--dark-700) 100%);
+      color: var(--light-200);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    /* Professional Dark Navbar */
+    .navbar {
+      background: rgba(18, 18, 18, 0.85) !important;
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      padding: 0.75rem 2rem;
+      border-bottom: 1px solid rgba(45, 45, 45, 0.3);
+      position: sticky;
+      top: 0;
+      z-index: 1020;
+      transition: var(--transition);
+    }
+
+    .navbar.scrolled {
+      background: rgba(10, 10, 10, 0.95) !important;
+      box-shadow: 0 4px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .navbar-brand {
+      font-weight: 600;
+      font-size: 1.3rem;
+      color: var(--light-100);
+      letter-spacing: -0.5px;
+      transition: var(--transition);
+    }
+
+    .navbar-brand .bi {
+      color: var(--primary-500);
+      margin-right: 0.75rem;
+      transition: var(--transition);
+    }
+
+    .navbar-brand:hover {
+      color: var(--primary-500);
+    }
+
+    .navbar-brand:hover .bi {
+      transform: scale(1.1);
+    }
+
+    .nav-link {
+      font-weight: 500;
+      color: var(--light-300);
+      padding: 0.75rem 1.25rem;
+      margin: 0 0.25rem;
+      border-radius: var(--radius-md);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-link .bi {
+      margin-right: 0.5rem;
+    }
+
+    .nav-link:hover {
+      color: var(--light-100);
+      background: rgba(58, 134, 255, 0.1);
+    }
+
+    .nav-link.active {
+      color: var(--primary-500);
+      background: rgba(58, 134, 255, 0.15);
+    }
+
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 25%;
+      width: 50%;
+      height: 2px;
+      background: var(--primary-500);
+      border-radius: 2px;
+    }
+
+    /* Elegant Dropdowns */
+    .dropdown-menu {
+      background: rgba(30, 30, 30, 0.98);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--dark-600);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      border-radius: var(--radius-md);
+      padding: 0.5rem;
+      margin-top: 0.5rem;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: var(--transition);
+    }
+
+    .dropdown:hover .dropdown-menu {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .dropdown-item {
+      color: var(--light-300);
+      padding: 0.65rem 1.25rem;
+      border-radius: 4px;
+      transition: var(--transition);
+    }
+
+    .dropdown-item:hover {
+      background: rgba(58, 134, 255, 0.1);
+      color: var(--light-100);
+    }
+
+    .dropdown-item .bi {
+      width: 20px;
+      color: var(--primary-500);
+    }
+
+    /* User Profile Section */
+    .user-menu {
+      display: flex;
+      align-items: center;
+      margin-left: 1.5rem;
+    }
+
+    .user-greeting {
+      color: var(--light-200);
+      font-weight: 500;
+      font-size: 0.95rem;
+      margin-right: 0.75rem;
+    }
+    .user-info {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+}
+
+.user-email {
+  font-size: 0.7em;
+  color: #777;
+}
+
+    .user-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(58, 134, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-500);
+      border: 1px solid rgba(58, 134, 255, 0.3);
+      transition: var(--transition);
+    }
+
+    .user-avatar:hover {
+      background: rgba(58, 134, 255, 0.2);
+      transform: scale(1.05);
+    }
+
+    /* Logout Link */
+    .logout-link {
+      color: var(--light-300);
+      transition: var(--transition);
+    }
+
+    .logout-link:hover {
+      color: var(--accent-red);
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 992px) {
+      .navbar {
+        padding: 0.75rem 1.5rem;
+      }
+      
+      .navbar-collapse {
+        background: var(--dark-800);
+        padding: 1rem;
+        margin-top: 0.75rem;
+        border-radius: 0 0 var(--radius-md) var(--radius-md);
+      }
+      
+      .user-menu {
+        margin: 1rem 0 0 0;
+        padding-top: 1rem;
+        border-top: 1px solid var(--dark-600);
+      }
+    }
+     
+  </style>
+</head>
+<body>
+
+<!-- Professional Dark Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'JobSeeker_Dashboard' %}">
+      <i class="bi bi-shield-lock-fill"></i>JobSeeker Pro
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'JobSeeker_Dashboard' %}">
+            <i class="bi bi-speedometer2"></i> Dashboard
+          </a>
+        </li>
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-journal-check"></i> Applications
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'apply_for_job' %}" class="dropdown-item"><i class="bi bi-pencil-square"></i> Apply For Job</a></li>
+            <li><a href="{% url 'job_application_list' %}" class="dropdown-item"><i class="bi bi-folder2-open"></i> My Applications</a></li>
+          </ul>
+        </li>
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-person-workspace"></i> Career
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'Career_Assistance' %}" class="dropdown-item"><i class="bi bi-lightbulb"></i> Career Guidance</a></li>
+          </ul>
+        </li>
+        
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+            <i class="bi bi-vr"></i> Virtual Tours
+          </a>
+          <ul class="dropdown-menu">
+            <!-- <li><a href="{% url 'virtual-tour-create' %}" class="dropdown-item"><i class="bi bi-plus-square"></i> Add Tour</a></li> -->
+            <li><a href="{% url 'virtual_tour_list' %}" class="dropdown-item"><i class="bi bi-eye-fill"></i> View Tours</a></li>
+          </ul>
+        </li>
+      </ul>
+      
+      <div class="user-menu">
+        <span class="user-greeting">
+          {% if request.user.is_authenticated %}
+            {{ request.user.get_full_name|default:request.user.username }}
+          {% else %}
+            Guest User
+          {% endif %}
+        </span>
+        {% if request.user.is_authenticated %}
+          <span class="user-email">{{ request.user.email }}</span>
+        {% endif %}
+        <div class="user-avatar">
+          <i class="bi bi-person-fill"></i>
+        </div>
+      </div>
+      
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link logout-link" href="{% url 'logout' %}">
+            <i class="bi bi-box-arrow-right"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Main Content -->
+<main class="container py-4">
+  <!-- Your content here -->
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // Navbar scroll effect
+  window.addEventListener('scroll', function() {
+    const navbar = document.querySelector('.navbar');
+    navbar.classList.toggle('scrolled', window.scrollY > 10);
+  });
+
+  // Smooth dropdown animations
+  document.querySelectorAll('.dropdown').forEach(dropdown => {
+    dropdown.addEventListener('mouseenter', function() {
+      this.querySelector('.dropdown-menu').style.opacity = '1';
+      this.querySelector('.dropdown-menu').style.transform = 'translateY(0)';
+    });
+    
+    dropdown.addEventListener('mouseleave', function() {
+      this.querySelector('.dropdown-menu').style.opacity = '0';
+      this.querySelector('.dropdown-menu').style.transform = 'translateY(8px)';
+    });
+  });
+</script>
+</body>
+</html>

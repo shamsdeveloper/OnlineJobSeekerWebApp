@@ -1,0 +1,537 @@
+{% extends 'JobSeeker/base.html' %}
+{% load static %}
+{% block title %}Apply for a Job | CareerConnect{% endblock %}
+{% block content %}
+<div class="application-portal" style="margin-top:-50px;">
+    <div class="portal-container">
+        <div class="portal-header">
+            <div class="header-content">
+                <h1 class="portal-title">Join Our Team</h1>
+                <p class="portal-subtitle">Complete your application to take the next step in your career</p>
+                <div class="progress-indicator">
+                    <div class="progress-step active">1</div>
+                    <div class="progress-bar"></div>
+                    <div class="progress-step">2</div>
+                    <div class="progress-bar"></div>
+                    <div class="progress-step">3</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="portal-body">
+            <form method="POST" enctype="multipart/form-data" class="application-form">
+                {% csrf_token %}
+                
+                <section class="form-section">
+                    <div class="section-header">
+                        <span class="section-number">01</span>
+                        <h2 class="section-title">Position Details</h2>
+                    </div>
+                    
+                    <div class="form-group floating-input">
+                        <div class="select-wrapper">
+                            <i class="fas fa-briefcase"></i>
+                            {{ form.job }}
+                            <label for="id_job" class="floating-label">Select Position</label>
+                        </div>
+                        <div class="form-note">Choose the role you're applying for</div>
+                    </div>
+                </section>
+                
+                <section class="form-section">
+                    <div class="section-header">
+                        <span class="section-number">02</span>
+                        <h2 class="section-title">Your Professional Story</h2>
+                    </div>
+                    
+                    <div class="form-group floating-input">
+                        <div class="textarea-wrapper">
+                            {{ form.cover_letter }}
+                            <label for="id_cover_letter" class="floating-label">Cover Letter</label>
+                            <div class="word-counter"><span id="word-count">0</span>/1000 words</div>
+                        </div>
+                        <div class="form-note">
+                            <p>Tell us why you're excited about this opportunity and how your skills align with the role.</p>
+                            <p>Tip: Focus on your achievements and how they relate to the position.</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="form-section">
+                    <div class="section-header">
+                        <span class="section-number">03</span>
+                        <h2 class="section-title">Supporting Documents</h2>
+                    </div>
+                    
+                    <div class="form-group">
+                        <div class="file-upload-card">
+                            <div class="upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <h3 class="upload-title">Upload Your Resume</h3>
+                            <p class="upload-description">PDF, DOC, or DOCX (Max 5MB)</p>
+                            {{ form.resume }}
+                            <label for="id_resume" class="upload-button">Select File</label>
+                            <div class="file-preview" id="file-preview"></div>
+                        </div>
+                        <div class="form-note">
+                            Ensure your resume is up-to-date and tailored to this position.
+                        </div>
+                    </div>
+                    
+                    {{ form.status.as_hidden }}
+                </section>
+                
+                <div class="form-actions">
+                    <button type="submit" class="submit-application">
+                        <span>Submit Application</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <div class="application-guarantee">
+                        <i class="fas fa-lock"></i>
+                        <span>Your information is secure and will never be shared</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    :root {
+        --primary-color: #4361ee;
+        --primary-light: #eef2ff;
+        --secondary-color: #3f37c9;
+        --accent-color: #4cc9f0;
+        --text-dark: #2b2d42;
+        --text-medium: #4a4e69;
+        --text-light: #8e9aaf;
+        --background-light: #f8f9fa;
+        --border-radius: 12px;
+        --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+    
+    .application-portal {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: var(--background-light);
+        min-height: 100vh;
+        padding: 2rem 0;
+        color: var(--text-dark);
+    }
+    
+    .portal-container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+    }
+    
+    .portal-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .portal-header::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+    
+    .portal-header::after {
+        content: '';
+        position: absolute;
+        bottom: -80px;
+        right: -30px;
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+    
+    .header-content {
+        position: relative;
+        z-index: 2;
+    }
+    
+    .portal-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .portal-subtitle {
+        font-size: 1rem;
+        opacity: 0.9;
+        margin-bottom: 2rem;
+    }
+    
+    .progress-indicator {
+        display: flex;
+        align-items: center;
+        margin-top: 2rem;
+    }
+    
+    .progress-step {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        font-weight: 600;
+    }
+    
+    .progress-step.active {
+        background: white;
+        color: var(--primary-color);
+    }
+    
+    .progress-bar {
+        flex: 1;
+        height: 2px;
+        background: rgba(255, 255, 255, 0.2);
+        margin: 0 8px;
+    }
+    
+    .portal-body {
+        padding: 2.5rem;
+    }
+    
+    .form-section {
+        margin-bottom: 2.5rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .section-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-number {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-light);
+        background: var(--primary-color);
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+    }
+    
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .floating-input {
+        position: relative;
+    }
+    
+    .select-wrapper, .textarea-wrapper {
+        position: relative;
+    }
+    
+    .select-wrapper i {
+        position: absolute;
+        left: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+        z-index: 2;
+    }
+    
+    select, textarea {
+        width: 100%;
+        padding: 1rem 1rem 1rem 3rem;
+        border: 1px solid #e0e0e0;
+        border-radius: var(--border-radius);
+        font-size: 0.9375rem;
+        transition: var(--transition);
+        background-color: white;
+    }
+    
+    select {
+        appearance: none;
+        height: 56px;
+    }
+    
+    select:focus, textarea:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+    
+    textarea {
+        min-height: 180px;
+        resize: vertical;
+        padding: 1.5rem;
+        line-height: 1.6;
+    }
+    
+    .floating-label {
+        position: absolute;
+        left: 3rem;
+        top: 1rem;
+        color: var(--text-light);
+        font-size: 0.9375rem;
+        transition: var(--transition);
+        pointer-events: none;
+        background: white;
+        padding: 0 0.5rem;
+        transform-origin: left center;
+    }
+    
+    select:focus + .floating-label,
+    select:not(:placeholder-shown) + .floating-label,
+    textarea:focus + .floating-label,
+    textarea:not(:placeholder-shown) + .floating-label {
+        transform: translateY(-1.75rem) scale(0.85);
+        color: var(--primary-color);
+    }
+    
+    .word-counter {
+        position: absolute;
+        right: 1rem;
+        bottom: 1rem;
+        font-size: 0.75rem;
+        color: var(--text-light);
+        background: white;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+    }
+    
+    .form-note {
+        font-size: 0.875rem;
+        color: var(--text-light);
+        margin-top: 0.5rem;
+        line-height: 1.5;
+    }
+    
+    .file-upload-card {
+        border: 2px dashed #e0e0e0;
+        border-radius: var(--border-radius);
+        padding: 2rem;
+        text-align: center;
+        transition: var(--transition);
+        position: relative;
+    }
+    
+    .file-upload-card:hover {
+        border-color: var(--primary-color);
+    }
+    
+    .upload-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+    }
+    
+    .upload-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--text-dark);
+    }
+    
+    .upload-description {
+        font-size: 0.875rem;
+        color: var(--text-light);
+        margin-bottom: 1.5rem;
+    }
+    
+    #id_resume {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        border: 0;
+    }
+    
+    .upload-button {
+        display: inline-block;
+        background: var(--primary-color);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+    
+    .upload-button:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+    }
+    
+    .file-preview {
+        margin-top: 1rem;
+        font-size: 0.875rem;
+        color: var(--text-medium);
+    }
+    
+    .form-actions {
+        margin-top: 3rem;
+        text-align: center;
+    }
+    
+    .submit-application {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--transition);
+        display: inline-flex;
+        align-items: center;
+        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+    }
+    
+    .submit-application:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+    }
+    
+    .submit-application i {
+        margin-left: 0.5rem;
+        transition: var(--transition);
+    }
+    
+    .submit-application:hover i {
+        transform: translateX(4px);
+    }
+    
+    .application-guarantee {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1.5rem;
+        font-size: 0.8125rem;
+        color: var(--text-light);
+    }
+    
+    .application-guarantee i {
+        margin-right: 0.5rem;
+        color: #4CAF50;
+    }
+    
+    @media (max-width: 768px) {
+        .portal-container {
+            border-radius: 0;
+        }
+        
+        .portal-header, .portal-body {
+            padding: 1.5rem;
+        }
+        
+        .section-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .section-number {
+            margin-bottom: 1rem;
+            margin-right: 0;
+        }
+    }
+</style>
+
+<script>
+    // Word counter for cover letter
+    document.addEventListener('DOMContentLoaded', function() {
+        const coverLetter = document.getElementById('id_cover_letter');
+        const wordCount = document.getElementById('word-count');
+        
+        if (coverLetter && wordCount) {
+            coverLetter.addEventListener('input', function() {
+                const text = this.value.trim();
+                const words = text ? text.split(/\s+/).length : 0;
+                wordCount.textContent = words;
+                
+                if (words > 1000) {
+                    wordCount.style.color = '#ff4757';
+                } else {
+                    wordCount.style.color = '';
+                }
+            });
+        }
+        
+        // File upload preview
+        const fileInput = document.getElementById('id_resume');
+        const filePreview = document.getElementById('file-preview');
+        
+        if (fileInput && filePreview) {
+            fileInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    filePreview.innerHTML = `
+                        <i class="fas fa-file-alt"></i> ${this.files[0].name} 
+                        <span class="file-size">(${(this.files[0].size / 1024 / 1024).toFixed(2)} MB)</span>
+                    `;
+                }
+            });
+        }
+    });
+</script>
+
+{% if messages %}
+    {% for message in messages %}
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            Swal.fire({
+                position: 'center',
+                icon: 'success',
+                title: 'Application Submitted Successfully!',
+                html: `
+                    <div style="text-align: center;">
+                        <p style="margin-bottom: 1.5rem;">{{ message }}</p>
+                        <div style="font-size: 0.9rem; color: #666;">
+                            <p>We'll review your application and get back to you soon.</p>
+                            <p>Check your email for a confirmation.</p>
+                        </div>
+                    </div>
+                `,
+                showConfirmButton: true,
+                confirmButtonText: 'Got it!',
+                confirmButtonColor: '#4361ee',
+                timer: 5000,
+                backdrop: `
+                    rgba(67,97,238,0.4)
+                    url("{% static 'images/confetti.gif' %}")
+                    center top
+                    no-repeat
+                `
+            });
+        </script>
+    {% endfor %}
+{% endif %}
+{% endblock %}

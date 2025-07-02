@@ -1,0 +1,256 @@
+{% extends 'Home/base.html' %}
+{% load static %}
+{% block title %}Job Portal Home - Discover Your Next Opportunity{% endblock %}
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="hero-section text-center py-5 mb-5 bg-primary text-white rounded-3 animate__animated animate__fadeIn">
+        <div class="container py-5">
+            <h1 class="display-4 fw-bold mb-4">Find Your Dream Job Today</h1>
+            <p class="lead mb-4">Connecting talented professionals with top employers worldwide</p>
+            
+            <!-- Authentication Buttons -->
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'signup' %}" class="btn btn-light btn-lg px-4 me-md-2 fw-bold">Register</a>
+                <a href="{% url 'login'  %}" class="btn btn-outline-light btn-lg px-4">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role-based Sections -->
+    <div class="row g-4 mb-5">
+        <!-- Job Seeker Card -->
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-lg animate__animated animate__fadeInLeft">
+                <div class="card-header bg-info text-white">
+                    <h2 class="h4 mb-0"><i class="fas fa-user-tie me-2"></i> Job Seeker</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h3 class="h5 text-muted">Find Your Perfect Match</h3>
+                        <p class="text-muted">Discover opportunities tailored to your skills and aspirations</p>
+                    </div>
+                    
+                    <ul class="list-unstyled">
+                        <li class="mb-3 d-flex">
+                            <i class="fas fa-search text-info me-3 mt-1"></i>
+                            <div>
+                                <h4 class="h6 mb-1">Smart Job Search</h4>
+                                <p class="small text-muted mb-0">Filter by location, salary, experience level, and keywords</p>
+                            </div>
+                        </li>
+                        <li class="mb-3 d-flex">
+                            <i class="fas fa-file-upload text-info me-3 mt-1"></i>
+                            <div>
+                                <h4 class="h6 mb-1">One-Click Apply</h4>
+                                <p class="small text-muted mb-0">Upload your resume and apply with a single click</p>
+                            </div>
+                        </li>
+                        <li class="mb-3 d-flex">
+                            <i class="fas fa-building text-info me-3 mt-1"></i>
+                            <div>
+                                <h4 class="h6 mb-1">Virtual Company Tours</h4>
+                                <p class="small text-muted mb-0">Explore workplaces before you apply</p>
+                            </div>
+                        </li>
+                        <li class="mb-3 d-flex">
+                            <i class="fas fa-bell text-info me-3 mt-1"></i>
+                            <div>
+                                <h4 class="h6 mb-1">Real-time Alerts</h4>
+                                <p class="small text-muted mb-0">Get notifications for new matching jobs</p>
+                            </div>
+                        </li>
+                        <li class="d-flex">
+                            <i class="fas fa-robot text-info me-3 mt-1"></i>
+                            <div>
+                                <h4 class="h6 mb-1">AI Recommendations</h4>
+                                <p class="small text-muted mb-0">Personalized job suggestions based on your profile</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent border-0 text-center py-3">
+                    <a href="{% url 'login' %}" class="btn btn-info px-4 py-2 rounded-pill fw-bold">
+                        Start Job Search <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Employer Card -->
+        <div class="col-md-6">
+            <div class="card h-100 border-0 shadow-lg animate__animated animate__fadeInRight">
+                <div class="card-header bg-warning text-dark">
+                    <h2 class="h4 mb-0"><i class="fas fa-briefcase me-2"></i> Employer</h2>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h3 class="h5 text-muted">Find Top Talent</h3>
+                        <p class="text-muted">Connect with qualified candidates quickly and efficiently</p>
+                    </div>
+                    
+                    <ul class="list-unstyled">
+                        <li class="mb-3 d-flex">
+                            <i class="fas fa-ad text-warning me-3 mt-1"></i>
+                            <div>
+                                <h4 class="h6 mb-1">Job Posting</h4>
+                                <p class="small text-muted mb-0">Create and manage job listings with our easy tools</p>
+                            </div>
+                        </li>
+                        <li class="mb-3 d-flex">
+                            <i class="fas fa-users text-warning me-3 mt-1"></i>
+                            <div>
+                                <h4 class="h6 mb-1">Candidate Management</h4>
+                                <p class="small text-muted mb-0">Track and organize applicants in one place</p>
+                            </div>
+                        </li>
+                        <li class="mb-3 d-flex">
+                            <i class="fas fa-calendar-alt text-warning me-3 mt-1"></i>
+                            <div>
+                                <h4 class="h6 mb-1">Interview Scheduling</h4>
+                                <p class="small text-muted mb-0">Coordinate interviews seamlessly</p>
+                            </div>
+                        </li>
+                        <li class="mb-3 d-flex">
+                            <i class="fas fa-chart-line text-warning me-3 mt-1"></i>
+                            <div>
+                                <h4 class="h6 mb-1">Analytics Dashboard</h4>
+                                <p class="small text-muted mb-0">Monitor your hiring metrics</p>
+                            </div>
+                        </li>
+                        <li class="d-flex">
+                            <i class="fas fa-brain text-warning me-3 mt-1"></i>
+                            <div>
+                                <h4 class="h6 mb-1">AI Candidate Matching</h4>
+                                <p class="small text-muted mb-0">Find the best fits for your open positions</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent border-0 text-center py-3">
+                    <a href="{% url 'login' %}" class="btn btn-warning px-4 py-2 rounded-pill fw-bold text-dark">
+                        Post Jobs <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Chatbot Section -->
+    <div class="card mb-5 border-0 shadow animate__animated animate__fadeInUp">
+        <div class="card-body p-4">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h2 class="h3 mb-3"><i class="fas fa-robot text-primary me-2"></i> 24/7 AI Career Assistant</h2>
+                    <p class="lead">Get instant help with your job search or hiring needs</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <i class="fas fa-user-circle text-info me-3 mt-1"></i>
+                                <div>
+                                    <h4 class="h5 mb-1">For Job Seekers</h4>
+                                    <ul class="list-unstyled text-muted small">
+                                        <li class="mb-1">• Resume optimization tips</li>
+                                        <li class="mb-1">• Interview preparation</li>
+                                        <li>• Salary negotiation advice</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex mb-3">
+                                <i class="fas fa-building text-warning me-3 mt-1"></i>
+                                <div>
+                                    <h4 class="h5 mb-1">For Employers</h4>
+                                    <ul class="list-unstyled text-muted small">
+                                        <li class="mb-1">• Job description templates</li>
+                                        <li class="mb-1">• Candidate screening questions</li>
+                                        <li>• Market salary benchmarks</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <img src="{% static 'Images/chatbot.png' %}" alt="AI Assistant" class="img-fluid mb-3" style="max-height: 150px;">
+                    <a href="{% url 'login' %}" id="chatbot-toggle" class="btn btn-primary btn-lg rounded-pill px-4">
+                        <i class="fas fa-comment-dots me-2"></i> Start Chat
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Notice (visible only to admins) -->
+    {% if user.is_authenticated and user.role == 'Admin' %}
+    <div class="card border-danger mb-5 animate__animated animate__pulse animate__infinite">
+        <div class="card-header bg-danger text-white">
+            <h2 class="h4 mb-0"><i class="fas fa-cog me-2"></i> Admin Dashboard</h2>
+        </div>
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <div class="flex-grow-1">
+                    <h3 class="h5">System Management</h3>
+                    <p class="mb-0">Access user management, system monitoring, and analytics tools</p>
+                </div>
+                <div>
+                    <a href="#" class="btn btn-outline-danger px-4 py-2">
+                        Go to Admin Panel <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Chatbot Interface (hidden by default) -->
+<div id="chatbot-interface" class="card shadow-lg" style="display: none; position: fixed; bottom: 20px; right: 20px; width: 350px; z-index: 1000;">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+        <h3 class="h6 mb-0"><i class="fas fa-robot me-2"></i> AI Assistant</h3>
+        <button id="chatbot-close" class="btn btn-sm btn-light">&times;</button>
+    </div>
+    <div class="card-body chatbot-messages" style="height: 300px; overflow-y: auto;">
+        <div class="text-center py-4">
+            <img src="{% static 'Images/chatbot.png' %}" alt="AI Assistant" style="height: 60px;" class="mb-3">
+            <p class="mb-1"><strong>Hello! I'm your career assistant.</strong></p>
+            <p class="small text-muted">How can I help you today?</p>
+        </div>
+    </div>
+    <div class="card-footer">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Ask me anything about jobs or hiring...">
+            <button class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+    .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    .hero-section {
+        background: linear-gradient(135deg, #0061ff 0%, #60efff 100%);
+    }
+    .chatbot-messages {
+        background-color: #f8f9fa;
+    }
+    .list-unstyled li {
+        transition: transform 0.2s ease;
+    }
+    .list-unstyled li:hover {
+        transform: translateX(5px);
+    }
+</style>
+{% endblock %}

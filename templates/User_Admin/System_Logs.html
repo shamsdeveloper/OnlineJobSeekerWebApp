@@ -1,0 +1,188 @@
+{% extends 'User_Admin/base.html' %}
+{% load static %}
+{% block title %}System Logs{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="margin-left:140px; margin-top:-350px; width: calc(100% - 50px);">
+    <div class="card shadow-lg p-4">
+        <h4 class="mb-4">System Logs</h4>
+        
+        <!-- User List Table -->
+        <div class="mb-5">
+            <h5 class="mb-3">User List</h5>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Username</th>
+                            <th>Email Address</th>
+                            <th>Phone Number</th>
+                            <th>User Role</th>
+                            <th>Last Login</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>{{ user.username }}</td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.phone_number|default:"-" }}</td>
+                            <td>{{ user.get_role_display }}</td>
+                            <td>{{ user.last_login|date:"Y-m-d H:i" }}</td>
+                            <td>
+                                <button class="btn btn-sm btn-info select-user" data-username="{{ user.username }}">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center">No users found</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Edit User Form -->
+        <form id="searchForm">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Select Username</label>
+                    <select class="form-select" id="usernameDropdown" required>
+                        <option value="" disabled selected>Choose a username</option>
+                        {% for user in users %}
+                        <option value="{{ user.username }}">{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-info w-100">Search</button>
+                </div>
+            </div>
+        </form>
+
+        <form id="updateForm" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="user_id" id="user_id">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Email</label>
+                    <input type="email" name="email" id="email" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" name="phone_number" id="phone_number" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Role</label>
+                    <select name="role" id="role" class="form-select" required>
+                        <option value="JOB_SEEKER">Job Seeker</option>
+                        <option value="EMPLOYER">Employer</option>
+                        <option value="ADMIN">Admin</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-md-4">
+                    <label class="form-label">Profile Picture</label>
+                    <input type="file" name="profile_picture" class="form-control">
+                    <img id="profilePreview" src="" alt="No Image" class="img-thumbnail mt-2" width="120">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-pencil-square"></i> Update
+            </button>
+        </form>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click event for table row edit buttons
+    document.querySelectorAll('.select-user').forEach(button => {
+        button.addEventListener('click', function() {
+            const username = this.getAttribute('data-username');
+            document.getElementById('usernameDropdown').value = username;
+            
+            // Trigger the search form submission
+            document.getElementById('searchForm').dispatchEvent(new Event('submit'));
+            
+            // Scroll to the form
+            document.getElementById('updateForm').scrollIntoView({ behavior: 'smooth' });
+        });
+    });
+
+    document.getElementById('searchForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('usernameDropdown').value;
+
+        fetch(`/get_user_data/?username=${username}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('user_id').value = data.user.id;
+                    document.getElementById('email').value = data.user.email;
+                    document.getElementById('phone_number').value = data.user.phone_number || '';
+                    document.getElementById('role').value = data.user.role;
+
+                    // Profile Picture
+                    if (data.user.profile_picture) {
+                        document.getElementById('profilePreview').src = `/media/${data.user.profile_picture}`;
+                    } else {
+                        document.getElementById('profilePreview').src = '';
+                    }
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'User Found',
+                        text: 'User data has been loaded successfully.'
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Not Found',
+                        text: 'User not found!'
+                    });
+                }
+            });
+    });
+
+    document.getElementById('updateForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('/update_user1/', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Updated',
+                    text: 'User details updated successfully!'
+                }).then(() => {
+                    window.location.reload(); // Reload to show updated data
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Update Failed',
+                    text: data.message || 'Something went wrong.'
+                });
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

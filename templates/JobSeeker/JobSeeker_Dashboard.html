@@ -1,0 +1,795 @@
+{% extends 'JobSeeker/base.html' %}
+{% load static %}
+{% block title %}Job Listings{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% block content %}
+<div class="dashboard-container">
+    <!-- Enhanced Hero Section with Better Contrast -->
+    <div class="dashboard-hero glass-card py-5 mb-4">
+        <div class="container text-center">
+            <h1 class="hero-title">Find Your Dream Career</h1>
+            <p class="hero-subtitle">Browse thousands of opportunities from top companies</p>
+        </div>
+    </div>
+    
+    <div class="container py-4">
+        <!-- Enhanced Search Card with Better Visibility -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="glass-card p-4" style="background: rgba(15, 23, 42, 0.85);">
+                    <div class="search-container position-relative mb-3">
+                        <div class="input-group glass-input" style="background: rgba(255, 255, 255, 0.15)!important;">
+                            <span class="input-group-text bg-transparent border-0">
+                                <i class="fas fa-search text-white"></i>
+                            </span>
+                            <input type="text" id="searchInput" class="form-control border-0 bg-transparent text-white" 
+                                   placeholder="Search by job title, company, skills..." 
+                                   aria-label="Search jobs"
+                                   autocomplete="off"
+                                   style="color: #fff!important;">
+                            <button class="btn btn-glass-primary px-4" type="button" id="searchButton">
+                                <span class="d-none d-md-inline">Search</span>
+                                <i class="fas fa-search d-md-none"></i>
+                            </button>
+                        </div>
+                        <div id="searchSuggestions" class="glass-dropdown shadow" style="background: rgba(15, 23, 42, 0.95)!important;"></div>
+                    </div>
+                    
+                    <div class="d-flex flex-wrap gap-2 filter-tags">
+                        <div class="flex-grow-1 flex-md-grow-0">
+                            <select class="form-select glass-select" id="jobTypeFilter" style="background: rgba(255, 255, 255, 0.15)!important;">
+                                <option value="">All Job Types</option>
+                                <option value="Full-time">Full-time</option>
+                                <option value="Part-time">Part-time</option>
+                                <option value="Contract">Contract</option>
+                                <option value="Internship">Internship</option>
+                            </select>
+                        </div>
+                        <div class="flex-grow-1 flex-md-grow-0">
+                            <select class="form-select glass-select" id="locationFilter" style="background: rgba(255, 255, 255, 0.15)!important;">
+                                <option value="" style="background-color: #0ee00e; color: white;">All Locations</option>
+                                {% for location in my_job %}
+                                <option value="{{ location }}"style="background-color: #0f172a; color: white;">{{ location }}</option>
+                                {% empty %}
+                                <option value="">No locations available</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="flex-grow-1 flex-md-grow-0">
+                            <select class="form-select glass-select" id="experienceFilter" style="background: rgba(255, 255, 255, 0.15)!important;">
+                                <option value="">Any Experience</option>
+                                <option value="Entry">Entry Level</option>
+                                <option value="Mid">Mid Level</option>
+                                <option value="Senior">Senior Level</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-glass-outline d-md-none" id="mobileFilterToggle">
+                            <i class="fas fa-sliders-h me-1"></i> Filters
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Job Cards with Better Contrast -->
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="jobCardsContainer">
+            {% for job in my_job %}
+            <div class="col job-card" 
+                 data-job-type="{{ job.get_job_type_display }}"
+                 data-location="{{ job.location }}"
+                 data-experience="{{ job.experience_level }}">
+                <div class="card glass-card h-100 hover-lift" style="background: rgba(15, 23, 42, 0.85);">
+                    <div class="card-header glass-header d-flex justify-content-between align-items-center py-3" style="background: rgba(67, 97, 238, 0.3)!important;">
+                        <h5 class="card-title mb-0 text-white">{{ job.title|truncatechars:30 }}</h5>
+                        <span class="badge glass-badge" style="background: rgba(255, 255, 255, 0.25)!important;">{{ job.get_job_type_display }}</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            {% if job.company.logo %}
+                            <img src="{{ job.company.logo.url }}" alt="{{ job.company.name }}" 
+                                 class="rounded-circle me-3" width="48" height="48">
+                            {% else %}
+                            <div class="company-logo-placeholder rounded-circle me-3" style="background: rgba(67, 97, 238, 0.3);">
+                                {{ job.company.name|first|upper }}
+                            </div>
+                            {% endif %}
+                            <div class="overflow-hidden">
+                                <h6 class="mb-0 text-truncate text-white">{{ job.company.name }}</h6>
+                                <small class="text-white-80">{{ job.location|truncatechars:25 }}</small>
+                            </div>
+                        </div>
+                        
+                        <div class="job-meta mb-3">
+                            <div class="d-flex flex-wrap gap-1">
+                                {% for skill in job.skills_required.all|slice:":5" %}
+                                <span class="badge glass-badge-sm" style="background: rgba(255, 255, 255, 0.2)!important;">{{ skill.name|truncatechars:15 }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <span class="text-success fw-bold">${{ job.salary_range }}</span>
+                                <span class="text-white-80">/month</span>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-warning">
+                                    <i class="far fa-clock me-1"></i>
+                                    {% if job.is_new %}
+                                    New
+                                    {% else %}
+                                    {{ job.posted_date|timesince }} ago
+                                    {% endif %}
+                                </small>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between gap-2">
+                            <button class="btn btn-glass-outline flex-grow-1" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#jobModal{{ job.id }}">
+                                <span class="d-none d-md-inline">Quick View</span>
+                                <i class="fas fa-eye d-md-none"></i>
+                            </button>
+                            <a href="{% url 'apply_for_job' %}" 
+                               class="btn btn-glass-primary px-3 flex-grow-1">
+                                <span class="d-none d-md-inline">Apply Now</span>
+                                <i class="fas fa-paper-plane d-md-none"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enhanced Modal with Better Readability -->
+            <div class="modal fade" id="jobModal{{ job.id }}" tabindex="-1" 
+                 aria-labelledby="jobModalLabel{{ job.id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content glass-modal" style="background: rgba(15, 23, 42, 0.98);">
+                        <div class="modal-header glass-modal-header" style="border-bottom: 1px solid rgba(255, 255, 255, 0.2);">
+                            <h5 class="modal-title text-white" id="jobModalLabel{{ job.id }}">
+                                <i class="fas fa-briefcase me-2"></i>{{ job.title }}
+                            </h5>
+                            <button type="button" class="btn-close btn-close-white" 
+                                    data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-white">
+                            <div class="d-flex align-items-center mb-4">
+                                {% if job.company.logo %}
+                                <img src="{{ job.company.logo.url }}" alt="{{ job.company.name }}" 
+                                     class="rounded-circle me-3" width="64" height="64">
+                                {% else %}
+                                <div class="company-logo-placeholder-lg rounded-circle me-3" style="background: rgba(67, 97, 238, 0.3);">
+                                    {{ job.company.name|first|upper }}
+                                </div>
+                                {% endif %}
+                                <div>
+                                    <h5 class="mb-0 text-white">{{ job.company.name }}</h5>
+                                    <div class="text-white-80">
+                                        <i class="fas fa-map-marker-alt me-1"></i>
+                                        {{ job.location }}
+                                        <span class="mx-2">•</span>
+                                        <i class="fas fa-briefcase me-1"></i>
+                                        {{ job.get_job_type_display }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-4">
+                                <div class="col-md-6 mb-3">
+                                    <div class="glass-card h-100" style="background: rgba(255, 255, 255, 0.1);">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-info">
+                                                <i class="fas fa-money-bill-wave me-2"></i>Salary
+                                            </h6>
+                                            <p class="card-text fw-bold text-success">
+                                                ${{ job.salary_range }} / month
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="glass-card h-100" style="background: rgba(255, 255, 255, 0.1);">
+                                        <div class="card-body">
+                                            <h6 class="card-title text-info">
+                                                <i class="fas fa-chart-line me-2"></i>Experience
+                                            </h6>
+                                            <p class="card-text fw-bold">
+                                                {{ job.get_experience_level_display }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <h6 class="text-info mb-3">
+                                <i class="fas fa-align-left me-2"></i>Job Description
+                            </h6>
+                            <div class="mb-4 glass-card p-3" style="background: rgba(255, 255, 255, 0.1);">
+                                {{ job.description|linebreaks }}
+                            </div>
+                            
+                            <h6 class="text-info mb-3">
+                                <i class="fas fa-tasks me-2"></i>Requirements
+                            </h6>
+                            <ul class="list-unstyled mb-4">
+                                {% for skill in job.skills_required.all %}
+                                <li class="mb-2 ps-3 text-white">
+                                    <i class="fas fa-check-circle text-success me-2"></i>
+                                    <span>{{ skill.name }}</span>
+                                </li>
+                                {% empty %}
+                                <li class="text-white-80">No specific requirements listed</li>
+                                {% endfor %}
+                            </ul>
+                            
+                            <div class="glass-card p-3 mt-4" style="background: rgba(255, 255, 255, 0.1);">
+                                <div class="d-flex align-items-center text-white">
+                                    <i class="fas fa-clock me-3 fs-4 text-info"></i>
+                                    <div>
+                                        <strong class="text-info">Application Deadline:</strong> 
+                                        <span>{{ job.expiration_date|date:"F d, Y" }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer glass-modal-footer" style="border-top: 1px solid rgba(255, 255, 255, 0.2);">
+                            <button type="button" class="btn btn-glass-outline" 
+                                    data-bs-dismiss="modal">
+                                <i class="fas fa-times me-1"></i> Close
+                            </button>
+                            <a href="{% url 'apply_for_job' %}" 
+                               class="btn btn-glass-primary px-4">
+                                <i class="fas fa-paper-plane me-1"></i> Apply Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="glass-card text-center py-5" style="background: rgba(15, 23, 42, 0.85);">
+                    <img src="{% static 'images/no-jobs.svg' %}" alt="No jobs" class="img-fluid mb-4" style="max-height: 150px;">
+                    <h4 class="text-white mb-3">No job listings found</h4>
+                    <p class="text-white-80">Try adjusting your search or filters</p>
+                    <button class="btn btn-glass-primary mt-3" id="resetFilters">
+                        Reset All Filters
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if my_job.has_other_pages %}
+        <div class="row mt-4">
+            <div class="col-12">
+                <nav aria-label="Job pagination">
+                    <ul class="pagination justify-content-center flex-wrap">
+                        {% if my_job.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link glass-pagination" href="?page=1" aria-label="First" style="background: rgba(255, 255, 255, 0.1);">
+                                <span aria-hidden="true">&laquo;&laquo;</span>
+                                <span class="sr-only">First</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link glass-pagination" href="?page={{ my_job.previous_page_number }}" aria-label="Previous" style="background: rgba(255, 255, 255, 0.1);">
+                                <span aria-hidden="true">&laquo;</span>
+                                <span class="sr-only">Previous</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        
+                        {% for num in my_job.paginator.page_range %}
+                            {% if my_job.number == num %}
+                            <li class="page-item active">
+                                <span class="page-link glass-pagination-active" style="background: rgba(67, 97, 238, 0.8);">{{ num }}</span>
+                            </li>
+                            {% elif num > my_job.number|add:'-3' and num < my_job.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link glass-pagination" href="?page={{ num }}" style="background: rgba(255, 255, 255, 0.1);">{{ num }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if my_job.has_next %}
+                        <li class="page-item">
+                            <a class="page-link glass-pagination" href="?page={{ my_job.next_page_number }}" aria-label="Next" style="background: rgba(255, 255, 255, 0.1);">
+                                <span aria-hidden="true">&raquo;</span>
+                                <span class="sr-only">Next</span>
+                            </a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link glass-pagination" href="?page={{ my_job.paginator.num_pages }}" aria-label="Last" style="background: rgba(255, 255, 255, 0.1);">
+                                <span aria-hidden="true">&raquo;&raquo;</span>
+                                <span class="sr-only">Last</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+:root {
+    --primary-color: #4361ee;
+    --primary-light: rgba(67, 97, 238, 0.8);
+    --secondary-color: #3f37c9;
+    --accent-color: #4895ef;
+    --dark-color: #0f172a;
+    --light-color: #f8fafc;
+    --glass-bg: rgba(15, 23, 42, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Base Styles */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    color: var(--light-color);
+    min-height: 100vh;
+    line-height: 1.6;
+}
+
+/* Enhanced Glassmorphism Effects */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    border-radius: 12px;
+    transition: var(--transition);
+    color: white;
+}
+
+.glass-header {
+    background: rgba(67, 97, 238, 0.3) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+}
+
+.glass-input {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: white !important;
+}
+
+.glass-select {
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: white !important;
+}
+
+.glass-select:focus {
+    border-color: var(--accent-color) !important;
+    box-shadow: 0 0 0 0.25rem rgba(72, 149, 239, 0.25) !important;
+}
+
+.glass-dropdown {
+    background: rgba(15, 23, 42, 0.95) !important;
+    border: 1px solid var(--glass-border) !important;
+    backdrop-filter: blur(12px);
+    z-index: 1000;
+}
+
+.glass-badge {
+    background: rgba(255, 255, 255, 0.25) !important;
+    color: white !important;
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+}
+
+.glass-badge-sm {
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    font-weight: normal;
+    font-size: 0.75rem;
+    padding: 0.25em 0.5em;
+}
+
+.glass-modal {
+    background: rgba(15, 23, 42, 0.98) !important;
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border) !important;
+}
+
+.glass-modal-header {
+    border-bottom: 1px solid var(--glass-border) !important;
+}
+
+.glass-modal-footer {
+    border-top: 1px solid var(--glass-border) !important;
+}
+
+.glass-pagination {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: white !important;
+    border: 1px solid var(--glass-border) !important;
+    margin: 0 2px;
+}
+
+.glass-pagination:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+.glass-pagination-active {
+    background: var(--primary-light) !important;
+    color: white !important;
+    border: 1px solid var(--glass-border) !important;
+}
+
+/* Enhanced Buttons */
+.btn-glass-primary {
+    background: var(--primary-light);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: var(--transition);
+    font-weight: 500;
+}
+
+.btn-glass-primary:hover {
+    background: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.4);
+    color: white;
+}
+
+.btn-glass-outline {
+    background: transparent;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: var(--transition);
+    font-weight: 500;
+}
+
+.btn-glass-outline:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Enhanced Typography */
+.hero-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    background: linear-gradient(to right, #fff, #c7d2fe);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    margin-bottom: 1rem;
+}
+
+.hero-subtitle {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+}
+
+.card-title {
+    font-weight: 600;
+    color: white;
+}
+
+/* Card Hover Effects */
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Company Logo Placeholder */
+.company-logo-placeholder {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(67, 97, 238, 0.3);
+    color: white;
+    font-weight: bold;
+    font-size: 1.25rem;
+}
+
+.company-logo-placeholder-lg {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(67, 97, 238, 0.3);
+    color: white;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.job-card {
+    animation: fadeInUp 0.5s ease forwards;
+    animation-delay: calc(var(--index) * 0.1s);
+    opacity: 0;
+}
+
+/* Enhanced Text Visibility */
+.text-white-80 {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.text-white-60 {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+.text-info {
+    color: var(--accent-color) !important;
+}
+
+.text-success {
+    color: #4ade80 !important;
+}
+
+.text-warning {
+    color: #fbbf24 !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+    .dashboard-hero {
+        padding: 3rem 0;
+    }
+    
+    .glass-card {
+        backdrop-filter: blur(8px);
+    }
+}
+
+@media (max-width: 767.98px) {
+    .filter-tags:not(.show-mobile-filters) > :not(#mobileFilterToggle) {
+        display: none;
+    }
+    
+    .filter-tags.show-mobile-filters {
+        flex-direction: column;
+    }
+    
+    .glass-card {
+        backdrop-filter: blur(6px);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .dashboard-hero {
+        padding: 2rem 0;
+    }
+    
+    .hero-title {
+        font-size: 1.75rem;
+    }
+    
+    #jobCardsContainer {
+        row-gap: 1rem;
+    }
+    
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+}
+
+/* Utility Classes */
+.backdrop-blur {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.transition-all {
+    transition: var(--transition);
+}
+
+/* Search Suggestions */
+#searchSuggestions {
+    position: absolute;
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    border-radius: 8px;
+    margin-top: 5px;
+}
+
+.suggestion-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.suggestion-item:hover {
+    background-color: rgba(67, 97, 238, 0.3);
+}
+
+/* Form Control Focus */
+.form-control:focus, .form-select:focus {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: var(--accent-color);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(72, 149, 239, 0.25);
+}
+
+/* Input Placeholder Color */
+::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+    opacity: 1;
+}
+
+:-ms-input-placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+::-ms-input-placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const searchSuggestions = document.getElementById('searchSuggestions');
+    const jobCards = document.querySelectorAll('.job-card');
+    const jobTypeFilter = document.getElementById('jobTypeFilter');
+    const locationFilter = document.getElementById('locationFilter');
+    const experienceFilter = document.getElementById('experienceFilter');
+    const resetFilters = document.getElementById('resetFilters');
+    const mobileFilterToggle = document.getElementById('mobileFilterToggle');
+    
+    // Sample suggestions data (in real app, fetch from backend)
+    const suggestions = [
+        'Software Engineer', 'Web Developer', 'Data Analyst', 
+        'Project Manager', 'UX Designer', 'Remote Jobs',
+        'Python Developer', 'JavaScript Jobs', 'Marketing Manager'
+    ];
+    
+    // Mobile filter toggle
+    if (mobileFilterToggle) {
+        mobileFilterToggle.addEventListener('click', function() {
+            const filterTags = document.querySelector('.filter-tags');
+            filterTags.classList.toggle('show-mobile-filters');
+            this.querySelector('i').classList.toggle('fa-sliders-h');
+            this.querySelector('i').classList.toggle('fa-times');
+        });
+    }
+    
+    // Predictive search with debounce
+    let debounceTimer;
+    searchInput.addEventListener('input', function() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (searchTerm.length > 2) {
+                const filtered = suggestions.filter(item => 
+                    item.toLowerCase().includes(searchTerm)
+                );
+                
+                if (filtered.length > 0) {
+                    searchSuggestions.innerHTML = filtered.map(item => 
+                        `<div class="suggestion-item">${item}</div>`
+                    ).join('');
+                    searchSuggestions.style.display = 'block';
+                } else {
+                    searchSuggestions.style.display = 'none';
+                }
+            } else {
+                searchSuggestions.style.display = 'none';
+            }
+        }, 300);
+    });
+    
+    // Click outside to close suggestions
+    document.addEventListener('click', function(e) {
+        if (!searchInput.contains(e.target) && !searchSuggestions.contains(e.target)) {
+            searchSuggestions.style.display = 'none';
+        }
+    });
+    
+    // Suggestion click handler
+    searchSuggestions.addEventListener('click', function(e) {
+        if (e.target.classList.contains('suggestion-item')) {
+            searchInput.value = e.target.textContent;
+            searchSuggestions.style.display = 'none';
+            filterJobs();
+        }
+    });
+    
+    // Filter jobs based on search and filters
+    function filterJobs() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedJobType = jobTypeFilter.value;
+        const selectedLocation = locationFilter.value;
+        const selectedExperience = experienceFilter.value;
+        
+        jobCards.forEach(card => {
+            const title = card.querySelector('.card-title').textContent.toLowerCase();
+            const company = card.querySelector('h6').textContent.toLowerCase();
+            const location = card.dataset.location.toLowerCase();
+            const jobType = card.dataset.jobType;
+            const experience = card.dataset.experience;
+            const skills = Array.from(card.querySelectorAll('.job-meta .badge')).map(
+                badge => badge.textContent.toLowerCase()
+            );
+            
+            const matchesSearch = searchTerm === '' || 
+                title.includes(searchTerm) || 
+                company.includes(searchTerm) || 
+                skills.some(skill => skill.includes(searchTerm));
+                
+            const matchesJobType = selectedJobType === '' || jobType === selectedJobType;
+            const matchesLocation = selectedLocation === '' || location === selectedLocation.toLowerCase();
+            const matchesExperience = selectedExperience === '' || experience === selectedExperience;
+            
+            if (matchesSearch && matchesJobType && matchesLocation && matchesExperience) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+    
+    // Event listeners
+    searchButton.addEventListener('click', filterJobs);
+    searchInput.addEventListener('keyup', function(e) {
+        if (e.key === 'Enter') filterJobs();
+    });
+    
+    jobTypeFilter.addEventListener('change', filterJobs);
+    locationFilter.addEventListener('change', filterJobs);
+    experienceFilter.addEventListener('change', filterJobs);
+    
+    if (resetFilters) {
+        resetFilters.addEventListener('click', function() {
+            searchInput.value = '';
+            jobTypeFilter.value = '';
+            locationFilter.value = '';
+            experienceFilter.value = '';
+            filterJobs();
+        });
+    }
+    
+    // Add animation to cards on load
+    setTimeout(() => {
+        document.querySelectorAll('.job-card').forEach((card, index) => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = `opacity 0.3s ease, transform 0.3s ease ${index * 0.05}s`;
+            card.style.setProperty('--index', index);
+            
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 50);
+        });
+    }, 100);
+});
+</script>
+{% endblock %}

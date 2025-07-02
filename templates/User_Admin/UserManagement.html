@@ -1,0 +1,290 @@
+{% extends 'User_Admin/base.html' %}
+{% load static %}
+{% block title %}User Management{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="margin-left:140px;margin-top:-350px;width:calc(100% - 50px);">
+
+    <!-- ───────────── Edit User Form ───────────── -->
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0 rounded-lg" style="background-color:rgba(255,255,255,.85);">
+                <div class="card-header bg-dark text-white text-center py-3 rounded-top-lg">
+                    <h5 class="mb-0">Edit User</h5>
+                </div>
+
+                <div class="card-body p-4" style="background-color:rgb(240,248,255);">
+                    <form id="editUserForm" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="row g-3 align-items-center">
+                            <!-- Username combo-box -->
+                            <div class="col-md-3">
+                                <select name="username" id="userSelect" class="form-control shadow-sm">
+                                    <option value="">Select Username</option>
+                                    {% for u in users %}
+                                        <option value="{{ u.username }}">{{ u.username }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            <div class="col-md-3">
+                                <input type="email" name="email" placeholder="Email"
+                                       class="form-control shadow-sm">
+                            </div>
+
+                            <div class="col-md-3">
+                                <input type="text" name="phone_number" placeholder="Phone Number"
+                                       class="form-control shadow-sm">
+                            </div>
+
+                            <div class="col-md-3">
+                                <select name="role" class="form-select shadow-sm">
+                                    <option value="">Select Role</option>
+                                    <option value="ADMIN">Admin</option>
+                                    <option value="EMPLOYER">Employer</option>
+                                    <option value="JOB_SEEKER">Job Seeker</option>
+                                </select>
+                            </div>
+
+                            <!-- Picture upload + preview -->
+                            <div class="mt-3">
+                                <label class="form-label">Profile Picture</label>
+                                <input type="file" name="profile_picture"
+                                       class="form-control form-control-lg" accept="image/*">
+
+                                <div class="mt-2">
+                                    <label class="form-label">Current Profile Picture</label><br>
+                                    <img id="profilePreview" src=""
+                                         alt="No picture"
+                                         class="img-thumbnail rounded-circle shadow-sm border"
+                                         style="width:120px;height:120px;object-fit:cover;">
+                                </div>
+                            </div>
+
+                            <!-- Bio -->
+                            <div class="mt-4">
+                                <label class="form-label">Bio</label>
+                                <textarea name="bio" rows="3"
+                                          class="form-control form-control-lg"
+                                          placeholder="Tell us a bit about yourself..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="mt-4 d-flex justify-content-between">
+                            <div>
+                                <button type="button" id="searchBtn"
+                                        class="btn btn-success me-2">
+                                    <i class="bi bi-search"></i> Search
+                                </button>
+                                <button type="reset" class="btn btn-secondary">
+                                    <i class="bi bi-eraser"></i> Reset
+                                </button>
+                                <a href="{% url 'User_Management' %}" id="refreshBtn" class="btn btn-danger">
+                                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                                </a>
+                            </div>
+                            <button type="button" id="updateBtn"
+                                    class="btn btn-primary">
+                                <i class="bi bi-pencil-square"></i> Update
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ───────────── User Table (unchanged) ───────────── -->
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card shadow-lg border-0 rounded-lg" style="background-color:rgba(255,255,255,.85);">
+                <div class="card-header bg-dark text-white text-center py-4 rounded-top-lg">
+                    <h4 class="mb-0">User List</h4>
+                </div>
+                <div class="card-body p-4" style="background-color:rgb(32,145,145);">
+                    <div class="table-responsive">
+                        <table id="userTable" class="table table-hover align-items-center mb-0">
+                            <thead style="background-color:black;color:white;">
+                                <tr>
+                                    <th style="border:2px solid white;">Username</th>
+                                    <th style="border:2px solid white;">Email</th>
+                                    <th style="border:2px solid white;">Role</th>
+                                    <th style="border:2px solid white;">Phone Number</th>
+                                    <th style="border:2px solid white;">Bio</th>
+                                    <th style="border:2px solid white;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr data-username="{{ user.username }}"
+                                    style="background-color:rgb(61,9,247);color:white;font-weight:bold;">
+                                    <td style="border:2px solid white;">{{ user.username }}</td>
+                                    <td style="border:2px solid white;">{{ user.email }}</td>
+                                    <td style="border:2px solid white;">{{ user.get_role_display }}</td>
+                                    <td style="border:2px solid white;">{{ user.phone_number|default:"Not Provided" }}</td>
+                                    <td style="border:2px solid white;">{{ user.bio }}</td>
+                                    <td style="border:2px solid white;">
+                                        <!-- ⬇ ADD .deleteBtn and data-username -->
+                                        <button type="button"
+                                                class="btn btn-danger btn-sm shadow-sm deleteBtn"
+                                                data-username="{{ user.username }}">
+                                            <i class="bi bi-trash3"></i> Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-5">
+                                        <img src="{% static 'images/no-data.svg' %}" alt="No users"
+                                             height="120" class="mb-3">
+                                        <p class="text-muted fs-5">No users found.</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ───────────── Scripts ───────────── -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+(function () {
+    const form       = document.getElementById('editUserForm');
+    const csrftoken  = '{{ csrf_token }}';
+    const searchBtn  = document.getElementById('searchBtn');
+    const updateBtn  = document.getElementById('updateBtn');
+    const tableBody  = document.querySelector('#userTable tbody');
+
+    const setVal = (selector, val) => {
+        const el = form.querySelector(selector);
+        if (el) el.value = val ?? '';
+    };
+
+    /* ───────── Search Handler ───────── */
+    searchBtn.addEventListener('click', e => {
+        e.preventDefault();
+
+        const userName = form.username.value;
+        if (!userName) {
+            Swal.fire('Select a user', 'Please choose a username first.', 'warning');
+            return;
+        }
+
+        const data = new FormData();
+        data.append('username', userName);
+
+        fetch("{% url 'search_user' %}", {
+            method : 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            body   : data
+        })
+        .then(r => r.json())
+        .then(r => {
+            if (r.status === 'success') {
+                const d = r.data;
+                setVal('input[name="email"]',        d.email);
+                setVal('input[name="phone_number"]', d.phone_number);
+                setVal('select[name="role"]',        d.role);
+                setVal('textarea[name="bio"]',       d.bio);
+
+                // picture preview
+                const img = document.getElementById('profilePreview');
+                img.src = d.profile_pic || '';
+                img.alt = d.profile_pic ? 'Profile Picture' : 'No picture';
+
+                Swal.fire('Loaded', 'User details filled in.', 'success');
+            } else {
+                Swal.fire('Not found', r.message, 'error');
+            }
+        })
+        .catch(() => Swal.fire('Error', 'Server error. Please try again.', 'error'));
+    });
+    /*----------------------------------------------*/
+        /* ───────── Delete Handler (event delegation) ───────── */
+    tableBody.addEventListener('click', e => {
+        const btn = e.target.closest('.deleteBtn');
+        if (!btn) return;                 // clicked somewhere else
+
+        const userName = btn.dataset.username;
+        Swal.fire({
+            title: `Delete ${userName}?`,
+            text: "This cannot be undone!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete',
+        }).then(result => {
+            if (!result.isConfirmed) return;
+
+            const data = new FormData();
+            data.append('username', userName);
+
+            fetch("{% url 'delete_user' %}", {
+                method : 'POST',
+                headers: { 'X-CSRFToken': csrftoken },
+                body   : data
+            })
+            .then(r => r.json())
+            .then(r => {
+                if (r.status === 'success') {
+                    /* remove row */
+                    btn.closest('tr').remove();
+                    Swal.fire('Deleted!', r.message, 'success');
+                } else {
+                    Swal.fire('Error', r.message, 'error');
+                }
+            })
+            .catch(() => Swal.fire('Error', 'Server error. Please try again.', 'error'));
+        });
+    });
+
+    /* ───────── Update Handler ───────── */
+    updateBtn.addEventListener('click', e => {
+        e.preventDefault();
+
+        // basic guard: username chosen?
+        const userName = form.username.value;
+        if (!userName) {
+            Swal.fire('Select a user', 'Please choose a username first.', 'warning');
+            return;
+        }
+
+        const data = new FormData(form);           // gathers all fields + file
+        fetch("{% url 'update_user' %}", {
+            method : 'POST',
+            headers: { 'X-CSRFToken': csrftoken },
+            body   : data
+        })
+        .then(r => r.json())
+        .then(r => {
+            if (r.status === 'success') {
+                /* Refresh the row in the table */
+                const row = tableBody.querySelector(`tr[data-username="${userName}"]`);
+                if (row) {
+                    row.children[1].innerText = form.email.value;
+                    row.children[2].innerText = form.role.options[form.role.selectedIndex].text;
+                    row.children[3].innerText = form.phone_number.value || 'Not Provided';
+                }
+
+                // update preview if picture changed
+                if (r.profile_pic) {
+                    document.getElementById('profilePreview').src = r.profile_pic;
+                }
+
+                Swal.fire('Updated!', r.message, 'success');
+            } else {
+                Swal.fire('Update failed', r.message, 'error');
+            }
+        })
+        .catch(() => Swal.fire('Error', 'Server error. Please try again.', 'error'));
+    });
+})();
+</script>
+{% endblock %}

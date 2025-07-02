@@ -1,0 +1,853 @@
+{% extends 'Home/base.html' %}
+{% load static %}
+{% block title %}About Us - NextGen Job Portal{% endblock %}
+{% block content %}
+
+<!-- 3D Hero Section with Particle Animation -->
+<section class="hero-3d-section position-relative overflow-hidden">
+  <div id="particles-js" class="particles-container"></div>
+  <div class="container position-relative z-index-1">
+    <div class="row min-vh-80 align-items-center py-5 bg-dark">
+      <div class="col-lg-7 text-center text-lg-start">
+        <h1 class="display-3 fw-bold text-white mb-4 animate__animated animate__fadeInDown" style="color: #ffc107;">Redefining <span class="text-gradient-primary">Career Connections</span></h1>
+        <p class="lead text-light opacity-75 mb-5 animate__animated animate__fadeIn animate__delay-1s">We're building the world's most intelligent job matching platform using AI and behavioral science</p>
+        <div class="d-flex flex-wrap justify-content-center justify-content-lg-start gap-3 animate__animated animate__fadeIn animate__delay-2s">
+          <a href="#how-it-works" class="btn btn-primary btn-lg px-4 py-3 rounded-pill shadow">See Our Technology</a>
+          <a href="#testimonials" class="btn btn-outline-light btn-lg px-4 py-3 rounded-pill">Success Stories</a>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-block animate__animated animate__fadeIn animate__delay-1s">
+        <div class="hero-3d-model">
+          <img src="{% static 'images/3d-illustration.png' %}" alt="AI Recruitment" class="img-fluid floating-animation">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-wave-divider">
+    <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+      <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+    </svg>
+  </div>
+</section>
+
+<!-- Value Proposition Cards -->
+<section class="value-props py-5 bg-dark">
+  <div class="container py-5">
+    <div class="row g-4 justify-content-center">
+      <div class="col-lg-4 col-md-6">
+        <div class="value-card card border-0 shadow-sm h-100 hover-lift">
+          <div class="card-body p-4 text-center bg-primary text-white">
+            <div class="icon-circle-lg bg-primary-soft text-primary mb-4 mx-auto">
+              <i class="fas fa-brain fa-2x"></i>
+            </div>
+            <h3 class="h4 mb-3">Predictive Matching</h3>
+            <p class="text-white mb-0">Our AI analyzes 127 data points to match candidates with ideal roles based on skills, personality, and growth potential.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="value-card card border-0 shadow-sm h-100 hover-lift">
+          <div class="card-body p-4 text-center bg-success text-white">
+            <div class="icon-circle-lg bg-primary-soft text-primary mb-4 mx-auto">
+              <i class="fas fa-chart-line fa-2x"></i>
+            </div>
+            <h3 class="h4 mb-3">Career Growth Focus</h3>
+            <p class="text-white mb-0">We prioritize long-term career trajectory over immediate job placement for sustainable success.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="value-card card border-0 shadow-sm h-100 hover-lift">
+          <div class="card-body p-4 text-center bg-danger text-white">
+            <div class="icon-circle-lg bg-primary-soft text-primary mb-4 mx-auto">
+              <i class="fas fa-shield-alt fa-2x"></i>
+            </div>
+            <h3 class="h4 mb-3">Bias-Free Process</h3>
+            <p class="text-white mb-0">Our algorithms are designed to eliminate unconscious bias in hiring decisions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section id="how-it-works" class="how-it-works py-5 bg-info">
+  <div class="container py-5">
+    <div class="row justify-content-center mb-5">
+      <div class="col-lg-8 text-center">
+        <span class="text-danger mb-3 fw-bold h1">Our Technology</span>
+        <h2 class="display-5 fw-bold mb-4">How Our <span class="text-gradient-primary">AI Platform Works</span></h2>
+        <p class="lead text-muted">A seamless integration of artificial intelligence and human expertise</p>
+      </div>
+    </div>
+    
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6">
+        <div class="process-steps">
+          <div class="process-step active">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>Deep Profile Analysis</h4>
+              <p>Our system evaluates your skills, experience, work preferences, and personality traits to build a comprehensive profile.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>Market Intelligence Scan</h4>
+              <p>Real-time analysis of thousands of job postings to identify emerging trends and in-demand skills.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>Cultural Fit Assessment</h4>
+              <p>Proprietary algorithms evaluate company cultures to match you with organizations where you'll thrive.</p>
+            </div>
+          </div>
+          <div class="process-step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h4>Smart Recommendations</h4>
+              <p>Personalized job matches with compatibility scores and growth potential indicators.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="tech-illustration position-relative p-5">
+          <img src="{% static 'images/ai-dashboard.png' %}" alt="AI Dashboard" class="img-fluid rounded-4 shadow">
+          <div class="floating-element-1 bg-primary rounded-circle"></div>
+          <div class="floating-element-2 bg-warning rounded-circle"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Data Visualization Section -->
+<section class="data-viz-section py-5 bg-dark text-white">
+  <div class="container py-5">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-6">
+        <h2 class="display-5 fw-bold mb-4">Our Platform in <span class="text-primary">Numbers</span></h2>
+        <p class="lead mb-4">Quantifying our impact on the job market</p>
+        <div class="row g-4">
+          <div class="col-6">
+            <div class="data-card bg-dark-light p-4 rounded-3">
+              <div class="display-4 fw-bold mb-2 text-primary">92%</div>
+              <p class="mb-0">Candidate satisfaction rate</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="data-card bg-dark-light p-4 rounded-3">
+              <div class="display-4 fw-bold mb-2 text-primary">3.5x</div>
+              <p class="mb-0">Faster hiring process</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="data-card bg-dark-light p-4 rounded-3">
+              <div class="display-4 fw-bold mb-2 text-primary">87%</div>
+              <p class="mb-0">Lower turnover rate</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="data-card bg-dark-light p-4 rounded-3">
+              <div class="display-4 fw-bold mb-2 text-primary">65%</div>
+              <p class="mb-0">More diverse hires</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="data-visualization">
+          <canvas id="impactChart" height="400"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section id="testimonials" class="testimonials-section py-5 bg-white">
+  <div class="container py-5">
+    <div class="row justify-content-center mb-5">
+      <div class="col-lg-8 text-center">
+        <span class="badge bg-primary-soft text-primary mb-3">Success Stories</span>
+        <h2 class="display-5 fw-bold mb-4">Transforming <span class="text-gradient-primary">Careers</span></h2>
+        <p class="lead text-muted">Hear from professionals who found their ideal roles through our platform</p>
+      </div>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="testimonial-card card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-4">
+              <img src="{% static 'images/testimonial1.jpg' %}" class="rounded-circle me-3" width="60" alt="Sarah K.">
+              <div>
+                <h5 class="mb-1">Sarah K.</h5>
+                <span class="text-muted">Product Designer at TechCo</span>
+                <div class="rating mt-1">
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                </div>
+              </div>
+            </div>
+            <p class="mb-0">"The cultural fit analysis was spot-on. I've never felt more aligned with a company's values and work style. The AI suggested roles I wouldn't have considered but ended up being perfect matches."</p>
+          </div>
+          <div class="card-footer bg-transparent border-top-0 pt-0">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-quote-left text-primary me-2"></i>
+              <small class="text-muted">Placed 3 months ago</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="testimonial-card card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-4">
+              <img src="{% static 'images/testimonial2.jpg' %}" class="rounded-circle me-3" width="60" alt="James L.">
+              <div>
+                <h5 class="mb-1">James L.</h5>
+                <span class="text-muted">Data Scientist at AI Labs</span>
+                <div class="rating mt-1">
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star-half-alt text-warning"></i>
+                </div>
+              </div>
+            </div>
+            <p class="mb-0">"After 200+ applications with no responses elsewhere, this platform got me 5 interviews in 2 weeks. The salary negotiation tool helped me secure a 40% increase over my previous role."</p>
+          </div>
+          <div class="card-footer bg-transparent border-top-0 pt-0">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-quote-left text-primary me-2"></i>
+              <small class="text-muted">Placed 5 months ago</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4">
+        <div class="testimonial-card card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <div class="d-flex align-items-center mb-4">
+              <img src="{% static 'images/testimonial3.jpg' %}" class="rounded-circle me-3" width="60" alt="Priya M.">
+              <div>
+                <h5 class="mb-1">Priya M.</h5>
+                <span class="text-muted">Marketing Director at BrandVision</span>
+                <div class="rating mt-1">
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                  <i class="fas fa-star text-warning"></i>
+                </div>
+              </div>
+            </div>
+            <p class="mb-0">"Returning to work after parental leave was daunting. The skills refresh recommendations and confidence-building tools made my transition smoother than I imagined possible."</p>
+          </div>
+          <div class="card-footer bg-transparent border-top-0 pt-0">
+            <div class="d-flex align-items-center">
+              <i class="fas fa-quote-left text-primary me-2"></i>
+              <small class="text-muted">Placed 2 months ago</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-5">
+      <a href="#" class="btn btn-outline-primary">View More Success Stories</a>
+    </div>
+  </div>
+</section>
+
+<!-- Team Section -->
+<section class="team-section py-5 bg-light">
+  <div class="container py-5">
+    <div class="row justify-content-center mb-5">
+      <div class="col-lg-8 text-center">
+        <span class="badge bg-primary-soft text-primary mb-3">Our Team</span>
+        <h2 class="display-5 fw-bold mb-4">The Minds Behind <span class="text-gradient-primary">Our Technology</span></h2>
+        <p class="lead text-muted">A diverse team of HR experts, data scientists, and engineers passionate about transforming hiring</p>
+      </div>
+    </div>
+    
+    <div class="row g-4 justify-content-center">
+      <div class="col-lg-3 col-md-6">
+        <div class="team-member card border-0 shadow-sm h-100">
+          <div class="team-img-wrapper">
+            <img src="{% static 'images/team1.jpg' %}" class="card-img-top" alt="Alex Chen">
+            <div class="team-social">
+              <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+            </div>
+          </div>
+          <div class="card-body text-center">
+            <h5 class="card-title mb-1">Alex Chen</h5>
+            <p class="text-primary small mb-3">CEO & Founder</p>
+            <p class="card-text text-muted small">Former Google HR leader with 15 years experience in talent acquisition</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-6">
+        <div class="team-member card border-0 shadow-sm h-100">
+          <div class="team-img-wrapper">
+            <img src="{% static 'images/team2.jpg' %}" class="card-img-top" alt="Dr. Maria Rodriguez">
+            <div class="team-social">
+              <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+            </div>
+          </div>
+          <div class="card-body text-center">
+            <h5 class="card-title mb-1">Dr. Maria Rodriguez</h5>
+            <p class="text-primary small mb-3">Chief Data Scientist</p>
+            <p class="card-text text-muted small">PhD in Machine Learning from MIT, specializes in predictive algorithms</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-6">
+        <div class="team-member card border-0 shadow-sm h-100">
+          <div class="team-img-wrapper">
+            <img src="{% static 'images/team3.jpg' %}" class="card-img-top" alt="Jamal Williams">
+            <div class="team-social">
+              <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+            </div>
+          </div>
+          <div class="card-body text-center">
+            <h5 class="card-title mb-1">Jamal Williams</h5>
+            <p class="text-primary small mb-3">Head of Product</p>
+            <p class="card-text text-muted small">Former UX Lead at Facebook, focused on candidate experience</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-3 col-md-6">
+        <div class="team-member card border-0 shadow-sm h-100">
+          <div class="team-img-wrapper">
+            <img src="{% static 'images/team4.jpg' %}" class="card-img-top" alt="Priya Kapoor">
+            <div class="team-social">
+              <a href="#" class="text-white"><i class="fab fa-linkedin-in"></i></a>
+              <a href="#" class="text-white"><i class="fab fa-twitter"></i></a>
+            </div>
+          </div>
+          <div class="card-body text-center">
+            <h5 class="card-title mb-1">Danish Taimoor</h5>
+            <p class="text-primary small mb-3">Diversity Officer</p>
+            <p class="card-text text-muted small">Organizational psychologist specializing in inclusive hiring</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-5">
+      <a href="#" class="btn btn-outline-primary">Meet the Full Team</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5 bg-gradient-primary text-white position-relative overflow-hidden">
+  <div class="container py-5 position-relative z-index-1">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <h2 class="display-5 fw-bold mb-4 text-dark">Ready to Find Your <span class="text-warning">Dream Job</span>?</h2>
+        <p class="lead mb-5 text-primary fw-bold">Join thousands of professionals who accelerated their careers with our intelligent platform</p>
+        <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+          <a href="{% url 'My_Home' %}" class="btn btn-light btn-lg px-4 py-3 rounded-pill fw-bold shadow">Get Started - It's Free</a>
+          <a href="#" class="btn btn-outline-light btn-lg px-4 py-3 rounded-pill fw-bold">How It Works</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cta-shapes">
+    <div class="shape-1"></div>
+    <div class="shape-2"></div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Color Variables */
+  :root {
+    --primary: #3a86ff;
+    --primary-light: rgba(58, 134, 255, 0.1);
+    --primary-dark: #2667cc;
+    --dark: #2b2d42;
+    --light: #f8f9fa;
+    --gradient-primary: linear-gradient(135deg, #3a86ff 0%, #8338ec 100%);
+  }
+  
+  /* Hero Section */
+  .hero-3d-section {
+    background-color: var(--dark);
+    color: white;
+    padding-top: 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+  
+  .hero-wave-divider {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    overflow: hidden;
+    line-height: 0;
+  }
+  
+  .hero-wave-divider svg {
+    position: relative;
+    display: block;
+    width: calc(100% + 1.3px);
+    height: 100px;
+  }
+  
+  .hero-wave-divider .shape-fill {
+    fill: #FFFFFF;
+  }
+  
+  .hero-3d-model img {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(0 20px 30px rgba(0,0,0,0.3));
+  }
+  
+  .floating-animation {
+    animation: floating 6s ease-in-out infinite;
+  }
+  
+  @keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+  }
+  
+  /* Text Gradient */
+  .text-gradient-primary {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  /* Value Cards */
+  .value-card {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .hover-lift:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+  }
+  
+  .icon-circle-lg {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .bg-primary-soft {
+    background-color: var(--primary-light);
+  }
+  
+  /* Process Steps */
+  .process-steps {
+    position: relative;
+    padding-left: 30px;
+  }
+  
+  .process-step {
+    position: relative;
+    padding: 20px 0;
+    border-left: 2px solid var(--primary-light);
+  }
+  
+  .process-step:last-child {
+    border-left: 2px solid transparent;
+  }
+  
+  .process-step.active .step-number {
+    background: var(--gradient-primary);
+    color: white;
+    border-color: var(--primary);
+  }
+  
+  .step-number {
+    position: absolute;
+    left: -36px;
+    top: 20px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--primary-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--primary);
+    transition: all 0.3s ease;
+  }
+  
+  .step-content {
+    padding-left: 30px;
+  }
+  
+  .tech-illustration {
+    position: relative;
+  }
+  
+  .floating-element-1 {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: -10px;
+    right: -10px;
+    opacity: 0.7;
+    animation: floating 4s ease-in-out infinite;
+  }
+  
+  .floating-element-2 {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    bottom: -15px;
+    left: -15px;
+    opacity: 0.5;
+    animation: floating 5s ease-in-out infinite reverse;
+  }
+  
+  /* Data Section */
+  .bg-dark-light {
+    background-color: rgba(255,255,255,0.05);
+  }
+  
+  /* Testimonial Cards */
+  .testimonial-card {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+  }
+  
+  .rating {
+    color: #ffc107;
+  }
+  
+  /* Team Section */
+  .team-member {
+    transition: all 0.3s ease;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .team-img-wrapper {
+    position: relative;
+    height: 250px;
+    overflow: hidden;
+  }
+  
+  .team-img-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  
+  .team-member:hover .team-img-wrapper img {
+    transform: scale(1.05);
+  }
+  
+  .team-social {
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    width: 100%;
+    padding: 15px;
+    background: var(--gradient-primary);
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+  }
+  
+  .team-member:hover .team-social {
+    bottom: 0;
+  }
+  
+  /* CTA Section */
+  .cta-section {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .cta-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    overflow: hidden;
+  }
+  
+  .cta-shapes .shape-1 {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.1);
+    top: -100px;
+    right: -100px;
+  }
+  
+  .cta-shapes .shape-2 {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    bottom: -50px;
+    left: -50px;
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Particles.js -->
+<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Font Awesome -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<!-- Animate.css -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+<script>
+  // Initialize Particles.js
+  document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('particles-js')) {
+      particlesJS('particles-js', {
+        "particles": {
+          "number": {
+            "value": 80,
+            "density": {
+              "enable": true,
+              "value_area": 800
+            }
+          },
+          "color": {
+            "value": "#ffffff"
+          },
+          "shape": {
+            "type": "circle",
+            "stroke": {
+              "width": 0,
+              "color": "#000000"
+            },
+            "polygon": {
+              "nb_sides": 5
+            }
+          },
+          "opacity": {
+            "value": 0.5,
+            "random": false,
+            "anim": {
+              "enable": false,
+              "speed": 1,
+              "opacity_min": 0.1,
+              "sync": false
+            }
+          },
+          "size": {
+            "value": 3,
+            "random": true,
+            "anim": {
+              "enable": false,
+              "speed": 40,
+              "size_min": 0.1,
+              "sync": false
+            }
+          },
+          "line_linked": {
+            "enable": true,
+            "distance": 150,
+            "color": "#ffffff",
+            "opacity": 0.4,
+            "width": 1
+          },
+          "move": {
+            "enable": true,
+            "speed": 2,
+            "direction": "none",
+            "random": false,
+            "straight": false,
+            "out_mode": "out",
+            "bounce": false,
+            "attract": {
+              "enable": false,
+              "rotateX": 600,
+              "rotateY": 1200
+            }
+          }
+        },
+        "interactivity": {
+          "detect_on": "canvas",
+          "events": {
+            "onhover": {
+              "enable": true,
+              "mode": "grab"
+            },
+            "onclick": {
+              "enable": true,
+              "mode": "push"
+            },
+            "resize": true
+          },
+          "modes": {
+            "grab": {
+              "distance": 140,
+              "line_linked": {
+                "opacity": 1
+              }
+            },
+            "bubble": {
+              "distance": 400,
+              "size": 40,
+              "duration": 2,
+              "opacity": 8,
+              "speed": 3
+            },
+            "repulse": {
+              "distance": 200,
+              "duration": 0.4
+            },
+            "push": {
+              "particles_nb": 4
+            },
+            "remove": {
+              "particles_nb": 2
+            }
+          }
+        },
+        "retina_detect": true
+      });
+    }
+
+    // Initialize Chart.js
+    if (document.getElementById('impactChart')) {
+      const ctx = document.getElementById('impactChart').getContext('2d');
+      const chart = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: ['Hiring Speed', 'Candidate Quality', 'Diversity', 'Retention', 'Satisfaction', 'Cost Savings'],
+          datasets: [{
+            label: 'Traditional Hiring',
+            data: [40, 65, 30, 50, 60, 45],
+            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1,
+            pointBackgroundColor: 'rgba(255, 99, 132, 1)'
+          }, {
+            label: 'Our Platform',
+            data: [85, 90, 80, 88, 92, 75],
+            backgroundColor: 'rgba(58, 134, 255, 0.2)',
+            borderColor: 'rgba(58, 134, 255, 1)',
+            borderWidth: 1,
+            pointBackgroundColor: 'rgba(58, 134, 255, 1)'
+          }]
+        },
+        options: {
+          scales: {
+            r: {
+              angleLines: {
+                display: true,
+                color: 'rgba(255, 255, 255, 0.2)'
+              },
+              suggestedMin: 0,
+              suggestedMax: 100,
+              grid: {
+                color: 'rgba(255, 255, 255, 0.2)'
+              },
+              pointLabels: {
+                color: 'white'
+              },
+              ticks: {
+                backdropColor: 'transparent',
+                color: 'white'
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              labels: {
+                color: 'white'
+              }
+            }
+          },
+          elements: {
+            line: {
+              tension: 0.1
+            }
+          }
+        }
+      });
+    }
+
+    // Animate process steps on scroll
+    function animateSteps() {
+      const steps = document.querySelectorAll('.process-step');
+      steps.forEach((step, index) => {
+        const stepPosition = step.getBoundingClientRect().top;
+        const screenPosition = window.innerHeight / 1.3;
+        
+        if (stepPosition < screenPosition) {
+          setTimeout(() => {
+            step.classList.add('active');
+          }, index * 200);
+        }
+      });
+    }
+    
+    // Run on load
+    animateSteps();
+    
+    // Run on scroll
+    window.addEventListener('scroll', animateSteps);
+  });
+</script>
+{% endblock %}

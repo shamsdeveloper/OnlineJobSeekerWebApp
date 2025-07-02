@@ -1,0 +1,467 @@
+{% extends 'Employee/base.html' %}
+{% load static %}
+{% block title %}Job Applications Management{% endblock %}
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-lg border-0 rounded-lg mb-4 glass-morphism-effect">
+                <div class="card-header bg-gradient-dark text-white border-0">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4 class="mb-0">Job Applications Dashboard</h4>
+                        <div>
+                            <span class="badge bg-primary rounded-pill me-2">Total: {{ total_applications }}</span>
+                            <button class="btn btn-sm btn-outline-light" id="filterToggle">
+                                <i class="fas fa-filter me-1"></i> Filters
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Filter Section -->
+                <div class="card-body p-4 bg-soft-primary border-bottom" id="filterSection" style="display: none;">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label small text-white">Search</label>
+                            <div class="input-group input-group-transparent">
+                                <span class="input-group-text bg-transparent border-end-0"><i class="fas fa-search"></i></span>
+                                <input type="text" class="form-control border-start-0 shadow-none" id="searchInput" placeholder="Search by name, job, or email...">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small text-white">Status</label>
+                            <select class="form-select shadow-none" id="statusFilter">
+                                <option value="">All Statuses</option>
+                                <option value="PENDING">Pending</option>
+                                <option value="REVIEWED">Reviewed</option>
+                                <option value="INTERVIEW_SCHEDULED">Interview Scheduled</option>
+                                <option value="ACCEPTED">Accepted</option>
+                                <option value="REJECTED">Rejected</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label small text-white">Date Range</label>
+                            <input type="text" class="form-control shadow-none date-range-picker" placeholder="Select date range">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button class="btn btn-dark w-100" id="applyFilters">
+                                <i class="fas fa-check me-1"></i> Apply
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="card-body p-4 bg-success">
+                    <div class="row mb-4">
+                        <div class="col-md-2 col-6 mb-3">
+                            <div class="card stat-card bg-primary  border-0 h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-white mb-1">Total</h6>
+                                            <h3 class="mb-0 text-white">{{ total_applications }}</h3>
+                                        </div>
+                                        <div class="bg-primary  p-3 rounded">
+                                            <i class="fas fa-file-alt text-white"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-6 mb-3">
+                            <div class="card stat-card bg-info border-0 h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-white mb-1">Accepted</h6>
+                                            <h3 class="mb-0">{{ accepted_count }}</h3>
+                                        </div>
+                                        <div class="bg-success p-3 rounded">
+                                            <i class="fas fa-check-circle text-white"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-6 mb-3">
+                            <div class="card stat-card bg-danger border-0 h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-white mb-1">Interview</h6>
+                                            <h3 class="mb-0" style="color: blue;">{{ interview_count }}</h3>
+                                        </div>
+                                        <div class="bg-dark p-3 rounded">
+                                            <i class="fas fa-calendar-check text-white"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-6 mb-3">
+                            <div class="card stat-card bg-warning border-0 h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-primary mb-1">Pending</h6>
+                                            <h3 class="mb-0">{{ pending_count }}</h3>
+                                        </div>
+                                        <div class="bg-warning p-3 rounded">
+                                            <i class="fas fa-clock text-white"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-6 mb-3">
+                            <div class="card stat-card bg-danger border-0 h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-success mb-1">Rejected</h6>
+                                            <h3 class="mb-0">{{ rejected_count }}</h3>
+                                        </div>
+                                        <div class="bg-danger p-3 rounded">
+                                            <i class="fas fa-times-circle text-white"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-6 mb-3">
+                            <div class="card stat-card bg-secondary bg-opacity-10 border-0 h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="text-muted mb-1">New Today</h6>
+                                            <h3 class="mb-0">{{ today_count }}</h3>
+                                        </div>
+                                        <div class="bg-secondary bg-opacity-25 p-3 rounded">
+                                            <i class="fas fa-star text-secondary"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Applications Cards -->
+                    <div class="row" id="applicationsContainer">
+                        {% if applications %}
+                            {% for application in applications %}
+                            <div class="col-xl-4 col-md-6 mb-4 application-card" 
+                                 data-status="{{ application.status }}" 
+                                 data-name="{{ application.applicant.username }}" 
+                                 data-job="{{ application.job.title }}" 
+                                 data-email="{{ application.applicant.email }}"
+                                 data-date="{{ application.application_date|date:'Y-m-d' }}">
+                                <div class="card border-0 shadow-sm h-100 hover-scale">
+                                    <div class="card-header bg-transparent border-0 pb-0">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span class="badge bg-{% if application.status == 'ACCEPTED' %}success{% elif application.status == 'REJECTED' %}danger{% elif application.status == 'INTERVIEW_SCHEDULED' %}info{% else %}warning{% endif %} bg-opacity-10 text-{% if application.status == 'ACCEPTED' %}success{% elif application.status == 'REJECTED' %}danger{% elif application.status == 'INTERVIEW_SCHEDULED' %}info{% else %}warning{% endif %}">
+                                                {{ application.get_status_display }}
+                                            </span>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-link text-muted" type="button" data-bs-toggle="dropdown">
+                                                    <i class="fas fa-ellipsis-v"></i>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-eye me-2"></i>View Details</a></li>
+                                                    <li><a class="dropdown-item" href="#"><i class="fas fa-edit me-2"></i>Edit Status</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item text-danger" href="#"><i class="fas fa-trash me-2"></i>Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-start mb-3">
+                                            <div class="flex-shrink-0">
+                                                <div class="avatar avatar-lg bg-light rounded-circle">
+                                                    <span class="avatar-initials text-dark">{{ application.applicant.username|slice:":2"|upper }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h5 class="mb-1">{{ application.applicant.username }}</h5>
+                                                <p class="text-muted small mb-1">
+                                                    <i class="fas fa-envelope me-1"></i> {{ application.applicant.email }}
+                                                </p>
+                                                <p class="text-muted small mb-0">
+                                                    <i class="fas fa-phone me-1"></i> {{ application.applicant.phone_number|default:"Not provided" }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mb-3">
+                                            <h6 class="text-primary">{{ application.job.title }}</h6>
+                                            <p class="small text-muted mb-2">{{ application.job.description|truncatewords:15 }}</p>
+                                        </div>
+                                        
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <span class="badge bg-light text-dark small">
+                                                    <i class="fas fa-calendar me-1"></i> {{ application.application_date|date:"M d, Y" }}
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <a href="{{ application.resume.url }}" class="btn btn-sm btn-outline-primary" download>
+                                                    <i class="fas fa-download me-1"></i> Resume
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer bg-transparent border-0 pt-0">
+                                        <div class="d-flex justify-content-between">
+                                            <a href="#" class="btn btn-sm btn-outline-secondary rounded-pill">View Profile</a>
+                                            <div class="dropdown">
+                                                <button class="btn btn-sm btn-{% if application.status == 'ACCEPTED' %}success{% elif application.status == 'REJECTED' %}danger{% elif application.status == 'INTERVIEW_SCHEDULED' %}info{% else %}warning{% endif %} rounded-pill dropdown-toggle" type="button" id="statusMenu{{ forloop.counter }}" data-bs-toggle="dropdown">
+                                                    Change Status
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li><a class="dropdown-item status-change" data-status="PENDING" href="#">Pending</a></li>
+                                                    <li><a class="dropdown-item status-change" data-status="REVIEWED" href="#">Reviewed</a></li>
+                                                    <li><a class="dropdown-item status-change" data-status="INTERVIEW_SCHEDULED" href="#">Interview Scheduled</a></li>
+                                                    <li><hr class="dropdown-divider"></li>
+                                                    <li><a class="dropdown-item status-change text-success" data-status="ACCEPTED" href="#">Accept</a></li>
+                                                    <li><a class="dropdown-item status-change text-danger" data-status="REJECTED" href="#">Reject</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                        <div class="col-12">
+                            <div class="text-center py-5">
+                                <img src="{% static 'images/no-data.svg' %}" alt="No applications" height="150" class="mb-4 opacity-75">
+                                <h5 class="text-muted">No job applications found</h5>
+                                <p class="text-muted small">When job seekers apply, their applications will appear here</p>
+                                <a href="#" class="btn btn-primary mt-3">
+                                    <i class="fas fa-plus me-1"></i> Post a New Job
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                {% if applications %}
+                <div class="card-footer bg-white border-0">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center mb-0">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">
+                                    <i class="fas fa-angle-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">
+                                    <i class="fas fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .glass-morphism-effect {
+        background: rgba(78, 47, 47, 0.85);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border: 1px solid rgba(113, 207, 49, 0.18);
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    }
+    
+    .hover-scale {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .hover-scale:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .stat-card {
+        transition: all 0.3s ease;
+        border-radius: 12px !important;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    }
+    
+    .avatar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .avatar-initials {
+        font-weight: 600;
+        font-size: 1rem;
+    }
+    
+    .bg-soft-primary {
+        background-color: rgba(78, 115, 223, 0.05);
+    }
+    
+    .input-group-transparent .form-control,
+    .input-group-transparent .input-group-text {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .input-group-transparent .form-control:focus {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Toggle filter section
+        const filterToggle = document.getElementById('filterToggle');
+        const filterSection = document.getElementById('filterSection');
+        
+        filterToggle.addEventListener('click', function() {
+            if (filterSection.style.display === 'none') {
+                filterSection.style.display = 'block';
+                filterToggle.innerHTML = '<i class="fas fa-times me-1"></i> Close';
+            } else {
+                filterSection.style.display = 'none';
+                filterToggle.innerHTML = '<i class="fas fa-filter me-1"></i> Filters';
+            }
+        });
+        
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const statusFilter = document.getElementById('statusFilter');
+        const applicationCards = document.querySelectorAll('.application-card');
+        
+        function filterApplications() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const statusValue = statusFilter.value;
+            
+            applicationCards.forEach(card => {
+                const name = card.getAttribute('data-name').toLowerCase();
+                const job = card.getAttribute('data-job').toLowerCase();
+                const email = card.getAttribute('data-email').toLowerCase();
+                const status = card.getAttribute('data-status');
+                
+                const matchesSearch = name.includes(searchTerm) || 
+                                     job.includes(searchTerm) || 
+                                     email.includes(searchTerm);
+                
+                const matchesStatus = statusValue === '' || status === statusValue;
+                
+                if (matchesSearch && matchesStatus) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        searchInput.addEventListener('input', filterApplications);
+        statusFilter.addEventListener('change', filterApplications);
+        
+        // Status change handler
+        document.querySelectorAll('.status-change').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const newStatus = this.getAttribute('data-status');
+                const card = this.closest('.application-card');
+                const badge = card.querySelector('.badge');
+                
+                // Update UI
+                let statusClass, statusText;
+                switch(newStatus) {
+                    case 'PENDING':
+                        statusClass = 'warning';
+                        statusText = 'Pending';
+                        break;
+                    case 'REVIEWED':
+                        statusClass = 'info';
+                        statusText = 'Reviewed';
+                        break;
+                    case 'INTERVIEW_SCHEDULED':
+                        statusClass = 'info';
+                        statusText = 'Interview Scheduled';
+                        break;
+                    case 'ACCEPTED':
+                        statusClass = 'success';
+                        statusText = 'Accepted';
+                        break;
+                    case 'REJECTED':
+                        statusClass = 'danger';
+                        statusText = 'Rejected';
+                        break;
+                }
+                
+                badge.className = `badge bg-${statusClass} bg-opacity-10 text-${statusClass}`;
+                badge.textContent = statusText;
+                
+                // Update dropdown button
+                const dropdownBtn = card.querySelector('.dropdown-toggle');
+                dropdownBtn.className = `btn btn-sm btn-${statusClass} rounded-pill dropdown-toggle`;
+                
+                // Here you would typically make an AJAX call to update the status in the database
+                console.log(`Status changed to: ${newStatus}`);
+                
+                // Show success message
+                const toast = document.createElement('div');
+                toast.className = 'position-fixed bottom-0 end-0 p-3';
+                toast.style.zIndex = '11';
+                toast.innerHTML = `
+                    <div class="toast show" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header bg-${statusClass} text-white">
+                            <strong class="me-auto">Status Updated</strong>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                        <div class="toast-body">
+                            Application status changed to "${statusText}"
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(toast);
+                
+                // Remove toast after 3 seconds
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            });
+        });
+        
+        // Initialize date range picker
+        $('.date-range-picker').daterangepicker({
+            opens: 'left',
+            drops: 'down',
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear',
+                format: 'MMM D, YYYY'
+            }
+        });
+        
+        $('.date-range-picker').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('MMM D, YYYY') + ' - ' + picker.endDate.format('MMM D, YYYY'));
+            filterApplications();
+        });
+        
+        $('.date-range-picker').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+            filterApplications();
+        });
+    });
+</script>
+{% endblock %}

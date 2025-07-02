@@ -1,0 +1,1793 @@
+{% extends 'JobSeeker/base.html' %}
+{% load static %}
+{% block title %}AI Career Assistant - Malaysia{% endblock %}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+{% block content %}
+<style>
+  #chat-messages 
+  {
+    background: linear-gradient(to bottom, #1e1e2f, #15151f);
+    scroll-behavior: smooth;
+  }
+  .message 
+  {
+    padding: 12px 18px;
+    margin-bottom: 12px;
+    border-radius: 18px;
+    max-width: 75%;
+    font-size: 15px;
+    line-height: 1.5;
+    animation: slideFade 0.4s ease-in-out;
+  }
+  .user-message 
+  {
+    background:linear-gradient(135deg, #0dcaf0, #0d6efd);
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+  }
+  .bot-message 
+  {
+    background: #2d2d44;
+    color: #dcdcdc;
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+  }
+  @keyframes slideFade {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  #user-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(13, 202, 240, 0.25);
+    border-color: #0dcaf0;
+  }
+
+  .card-header.bg-gradient {
+    background: linear-gradient(135deg, #0d6efd, #6610f2);
+    color: white;
+  }
+  @media (max-width: 768px) {
+    .container {
+      margin-left: 0 !important;
+      width: 100% !important;
+    }
+
+    #chat-container {
+      height: 400px;
+    }
+  }
+</style>
+</head>
+<body>
+<!-- ========================================================================================================================== -->
+<div class="container py-5" style="margin-top:-100px; width: calc(100% - 60px);">
+  <div class="card bg-dark text-white shadow-lg rounded-4 border-0">
+    <div class="card-header bg-gradient text-center py-4 rounded-top-4">
+      <h4 class="mb-1">🤖 <span class="text-info">AI Career Assistant</span> - Malaysia</h4>
+      <small class="text-secondary">Ask anything about jobs, resumes or interviews 🇲🇾</small>
+    </div>
+
+    <div class="card-body p-0" style="background-color: #1e1e2f;">
+      <div id="chat-container" class="d-flex flex-column justify-content-between" style="height: 500px;">
+        <div id="chat-messages" class="p-4 overflow-auto flex-grow-1">
+          <!-- Chat messages appear here -->
+        </div>
+
+        <form id="chat-form" class="d-flex p-3 bg-dark border-top border-secondary">
+          <input type="text" id="user-input" class="form-control bg-secondary text-white rounded-pill me-2 px-4" placeholder="Type your message..." required>
+          <button type="submit" class="btn btn-info rounded-pill px-4">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================================================================================================== -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Malaysian-specific configurations
+        const MALAYSIA_LOCATIONS = [
+            'Kuala Lumpur', 'Selangor', 'Penang', 'Johor', 'Perak', 
+            'Sabah', 'Sarawak', 'Pahang', 'Negeri Sembilan', 'Melaka',
+            'Terengganu', 'Kelantan', 'Kedah', 'Perlis', 'Labuan', 'Putrajaya'
+        ];
+
+        const MALAYSIA_SALARY_RANGES = {
+            'Entry Level': [2000, 4000],
+            'Mid Level': [4000, 8000],
+            'Senior Level': [8000, 15000],
+            'Executive': [10000, 25000]
+        };
+
+        const MALAYSIA_INDUSTRIES = [
+            'Technology', 'Banking & Finance', 'Manufacturing', 'Healthcare',
+            'Education', 'Oil & Gas', 'Tourism', 'Retail', 'Construction',
+            'Agriculture', 'Telecommunications', 'Logistics'
+        ];
+
+        const MALAYSIA_WORK_TYPES = ['On-site', 'Hybrid', 'Remote', 'Flexible'];
+
+        class NLPPipeline {
+            constructor() {
+                this.malaysia_keywords = {
+                    'locations': MALAYSIA_LOCATIONS,
+                    'industries': MALAYSIA_INDUSTRIES,
+                    'salary_terms': ['RM', 'ringgit', 'salary', 'gaji', 'expected salary'],
+                    'education_terms': ['degree', 'diploma', 'SPM', 'STPM', 'A-level', 'CGPA', 'education'],
+                    'language_terms': ['Bahasa Malaysia', 'English', 'Mandarin', 'Tamil', 'language'],
+                    'work_type_terms': [...MALAYSIA_WORK_TYPES, 'work from home', 'wfh', 'flexible']
+                };
+            }
+            
+            extractMalaysiaContext(text) {
+                const result = {
+                    'locations': [],
+                    'industries': [],
+                    'salary_mentioned': false,
+                    'education_mentioned': false,
+                    'languages_mentioned': [],
+                    'work_type_mentioned': null
+                };
+                
+                const textLower = text.toLowerCase();
+                
+                for (const loc of this.malaysia_keywords['locations']) {
+                    if (textLower.includes(loc.toLowerCase())) {
+                        result['locations'].push(loc);
+                    }
+                }
+                        
+                for (const industry of this.malaysia_keywords['industries']) {
+                    if (textLower.includes(industry.toLowerCase())) {
+                        result['industries'].push(industry);
+                    }
+                }
+                        
+                for (const term of this.malaysia_keywords['salary_terms']) {
+                    if (textLower.includes(term.toLowerCase())) {
+                        result['salary_mentioned'] = true;
+                        break;
+                    }
+                }
+                        
+                for (const term of this.malaysia_keywords['education_terms']) {
+                    if (textLower.includes(term.toLowerCase())) {
+                        result['education_mentioned'] = true;
+                        break;
+                    }
+                }
+                        
+                for (const term of this.malaysia_keywords['language_terms']) {
+                    if (textLower.includes(term.toLowerCase())) {
+                        result['languages_mentioned'].push(term);
+                    }
+                }
+                
+                for (const term of this.malaysia_keywords['work_type_terms']) {
+                    if (textLower.includes(term.toLowerCase())) {
+                        result['work_type_mentioned'] = term;
+                        break;
+                    }
+                }
+                        
+                return result;
+            }
+        }
+
+        class RecommendationEngine {
+            constructor(nlpPipeline) {
+                this.nlpPipeline = nlpPipeline;
+            }
+            
+            recommendJobs(userProfile, jobListings, topN = 5) {
+                // Convert to array if it's a single object
+                if (!Array.isArray(jobListings)) {
+                    jobListings = [jobListings];
+                }
+                
+                // Check if we have any job listings
+                if (jobListings.length === 0) {
+                    return [];
+                }
+                
+                const profileText = [
+                    ...(userProfile.skills || []),
+                    ...(userProfile.education || []),
+                    ...(userProfile.experience || []),
+                    ...(userProfile.languages || []),
+                    ...(userProfile.industry_preferences || [])
+                ].join(" ");
+                
+                // In a real implementation, we would use proper NLP processing here
+                // For this simplified version, we'll just do keyword matching
+                
+                // Score jobs based on how many keywords match
+                const scoredJobs = jobListings.map(job => {
+                    let score = 0;
+                    const jobText = (job.description + " " + job.requirements).toLowerCase();
+                    
+                    // Check skills
+                    if (userProfile.skills) {
+                        for (const skill of userProfile.skills) {
+                            if (jobText.includes(skill.toLowerCase())) {
+                                score += 2;
+                            }
+                        }
+                    }
+                    
+                    // Check location preference
+                    if (userProfile.preferred_locations && userProfile.preferred_locations.includes(job.location)) {
+                        score += 3;
+                    }
+                    
+                    // Check industry preference
+                    if (userProfile.industry_preferences && userProfile.industry_preferences.includes(job.industry)) {
+                        score += 2;
+                    }
+                    
+                    // Check work type preference
+                    if (userProfile.work_type_preference && userProfile.work_type_preference === job.job_type) {
+                        score += 2;
+                    }
+                    
+                    // Check salary expectation
+                    if (userProfile.expected_salary && job.salary_min >= (userProfile.expected_salary * 0.8)) {
+                        score += 1;
+                    }
+                    
+                    return {
+                        ...job,
+                        similarity: score
+                    };
+                });
+                
+                // Sort by score and return top N
+                return scoredJobs.sort((a, b) => b.similarity - a.similarity).slice(0, topN);
+            }
+            
+            recommendCandidates(jobId, topN = 5) {
+                // Sample candidate data
+                const sampleProfiles = [
+                    {
+                        'user_id': 201,
+                        'name': 'Shams',
+                        'email': 'shams@gmail.com',
+                        'skills': ['Python', 'Java', 'SQL', 'Web Development'],
+                        'education': ['Bachelor in Computer Science', 'CGPA 3.5'],
+                        'experience': ['2 years as Software Developer at Malaysian startup'],
+                        'languages': ['English', 'Bahasa Malaysia'],
+                        'location': 'Kuala Lumpur',
+                        'expected_salary': 7000,
+                        'industries': ['Technology', 'Finance'],
+                        'work_type_preference': 'Hybrid',
+                        'similarity': 0.85
+                    },
+                    {
+                        'user_id': 202,
+                        'name': 'Waqas',
+                        'email': 'waqas@gmail.com',
+                        'skills': ['JavaScript', 'React', 'Node.js'],
+                        'education': ['Diploma in IT', 'SPM 5A'],
+                        'experience': ['1 year as Frontend Developer'],
+                        'languages': ['English', 'Mandarin', 'Bahasa Malaysia'],
+                        'location': 'Penang',
+                        'expected_salary': 4500,
+                        'industries': ['Technology'],
+                        'work_type_preference': 'Remote',
+                        'similarity': 0.75
+                    },
+                    {
+                        'user_id':203,
+                        'name':'Zihan izhar',
+                        'email':'Izharzihan@gmail.com',
+                        'skills':['Python', 'Java', 'SQL', 'Web Development'],
+                        'education':['Diploma in IT', 'SPM 5A'],
+                        'experience':['1 year as Frontend Developer'],
+                        'languages':['English', 'Mandarin', 'Bahasa Malaysia'],
+                        'location':'Penang',
+                        'expected_salary':4500,
+                        'industries':['Technology'],
+                        'work_type_preference':'Remote',
+                        'similarity':0.75
+                    },
+                    {
+                        'user_id': 211,
+                        'name': 'Nur Aisyah bt Zulkifli',
+                        'email': 'aisyah@gmail.com',
+                        'skills': ['Data Science', 'Python', 'R', 'SQL'],
+                        'education': ['Master in Data Science', 'CGPA 3.9'],
+                        'experience': ['5 years as Data Scientist at Telekom Malaysia'],
+                        'languages': ['Bahasa Malaysia', 'English'],
+                        'location': 'Kuala Lumpur',
+                        'expected_salary': 10000,
+                        'industries': ['Telecommunications', 'Technology'],
+                        'work_type_preference': 'Hybrid',
+                        'similarity': 0.91
+                    },
+
+                    {
+                        'user_id': 212,
+                        'name': 'Lim Jun Hao',
+                        'email': 'limjunhao@gmail.com',
+                        'skills': ['Front-End Development', 'React', 'JavaScript', 'CSS'],
+                        'education': ['Bachelor in Computer Science', 'CGPA 3.4'],
+                        'experience': ['2 years at AirAsia'],
+                        'languages': ['Mandarin', 'English', 'Bahasa Malaysia'],
+                        'location': 'Selangor',
+                        'expected_salary': 6500,
+                        'industries': ['Travel', 'Technology'],
+                        'work_type_preference': 'Remote',
+                        'similarity': 0.78
+                    },
+
+                    {
+                        'user_id': 213,
+                        'name': 'Rashid bin Halim',
+                        'email': 'rashid@gmail.com',
+                        'skills': ['Business Analysis', 'UML', 'Process Mapping'],
+                        'education': ['Bachelor in Business IT', 'CGPA 3.2'],
+                        'experience': ['6 years at Tenaga Nasional Berhad (TNB)'],
+                        'languages': ['Bahasa Malaysia', 'English'],
+                        'location': 'Ipoh',
+                        'expected_salary': 8500,
+                        'industries': ['Utilities', 'Consulting'],
+                        'work_type_preference': 'Hybrid',
+                        'similarity': 0.84
+                    },
+
+                    {
+                        'user_id': 214,
+                        'name': 'Tan Jia Hui',
+                        'email': 'tan.jiahui@gmail.com',
+                        'skills': ['Graphic Design', 'Illustrator', 'InDesign', 'Branding'],
+                        'education': ['Bachelor in Creative Multimedia', 'CGPA 3.5'],
+                        'experience': ['3 years at Astro Malaysia'],
+                        'languages': ['Mandarin', 'English'],
+                        'location': 'Kuala Lumpur',
+                        'expected_salary': 6000,
+                        'industries': ['Media', 'Creative'],
+                        'work_type_preference': 'On-site',
+                        'similarity': 0.77
+                    },
+
+                    {
+                        'user_id': 215,
+                        'name': 'Muhammad Firdaus bin Amin',
+                        'email': 'firdaus@gmail.com',
+                        'skills': ['Mobile App Development', 'Flutter', 'Firebase', 'Dart'],
+                        'education': ['Bachelor in Software Engineering', 'CGPA 3.6'],
+                        'experience': ['2 years at Boost eWallet'],
+                        'languages': ['Bahasa Malaysia', 'English'],
+                        'location': 'Shah Alam',
+                        'expected_salary': 7000,
+                        'industries': ['Fintech', 'Technology'],
+                        'work_type_preference': 'Remote',
+                        'similarity': 0.80
+                    },
+
+                    {
+                        'user_id': 216,
+                        'name': 'Siti Hajar bt Roslan',
+                        'email': 'siti.hajar@gmail.com',
+                        'skills': ['Financial Accounting', 'Taxation', 'Auditing'],
+                        'education': ['Bachelor in Accounting', 'CGPA 3.7'],
+                        'experience': ['4 years at PwC Malaysia'],
+                        'languages': ['Bahasa Malaysia', 'English'],
+                        'location': 'Kuala Lumpur',
+                        'expected_salary': 8000,
+                        'industries': ['Finance', 'Consulting'],
+                        'work_type_preference': 'Hybrid',
+                        'similarity': 0.83
+                    },
+
+                    {
+                        'user_id': 217,
+                        'name': 'Ng Kok Leong',
+                        'email': 'ngkokleong@gmail.com',
+                        'skills': ['Embedded Systems', 'C/C++', 'IoT', 'PCB Design'],
+                        'education': ['Bachelor in Electrical Engineering', 'CGPA 3.5'],
+                        'experience': ['5 years at Intel Penang'],
+                        'languages': ['Mandarin', 'English'],
+                        'location': 'Penang',
+                        'expected_salary': 9500,
+                        'industries': ['Semiconductors', 'IoT'],
+                        'work_type_preference': 'On-site',
+                        'similarity': 0.86
+                    },
+
+                    {
+                        'user_id': 218,
+                        'name': 'Sharifah Nur Azlina bt Syed Omar',
+                        'email': 'sharifah.azlina@gmail.com',
+                        'skills': ['Legal Compliance', 'Contract Law', 'Policy Drafting'],
+                        'education': ['LLB in Law (Hons)', 'CGPA 3.8'],
+                        'experience': ['6 years as Legal Advisor at UEM Group'],
+                        'languages': ['Bahasa Malaysia', 'English'],
+                        'location': 'Putrajaya',
+                        'expected_salary': 12000,
+                        'industries': ['Government', 'Construction'],
+                        'work_type_preference': 'On-site',
+                        'similarity': 0.90
+                    },
+
+                    {
+                        'user_id': 219,
+                        'name': 'Zulkarnain bin Harun',
+                        'email': 'zulkarnain@gmail.com',
+                        'skills': ['AI Research', 'NLP', 'TensorFlow', 'PyTorch'],
+                        'education': ['PhD in Artificial Intelligence'],
+                        'experience': ['7 years in AI research at MIMOS Berhad'],
+                        'languages': ['Bahasa Malaysia', 'English'],
+                        'location': 'Cyberjaya',
+                        'expected_salary': 13000,
+                        'industries': ['Research', 'Technology'],
+                        'work_type_preference': 'Hybrid',
+                        'similarity': 0.94
+                    },
+
+                    {
+                        'user_id': 220,
+                        'name': 'Yap Siew Ling',
+                        'email': 'yapsiewling@gmail.com',
+                        'skills': ['Customer Support', 'CRM', 'Problem Solving'],
+                        'education': ['Diploma in Business Administration'],
+                        'experience': ['3 years at Lazada Malaysia'],
+                        'languages': ['Mandarin', 'English', 'Bahasa Malaysia'],
+                        'location': 'Johor Bahru',
+                        'expected_salary': 5000,
+                        'industries': ['Retail', 'E-commerce'],
+                        'work_type_preference': 'Remote',
+                        'similarity': 0.75
+                    },
+                    {
+                        'user_id': 221,
+                        'name': 'Muhammad Hafiz bin Rahman',
+                        'email': 'hafizrahman@gmail.com',
+                        'skills': ['Backend Development', 'Django', 'PostgreSQL', 'REST APIs'],
+                        'education': ['Bachelor in Computer Science', 'CGPA 3.5'],
+                        'experience': ['4 years at Jabil Malaysia'],
+                        'languages': ['Bahasa Malaysia', 'English'],
+                        'location': 'Penang',
+                        'expected_salary': 8500,
+                        'industries': ['Manufacturing', 'Technology'],
+                        'work_type_preference': 'Hybrid',
+                        'similarity': 0.84
+                    },
+
+                    {
+                        'user_id': 222,
+                        'name': 'Aisyah bt Kamaludin',
+                        'email': 'aisyah.kamal@gmail.com',
+                        'skills': ['Public Relations', 'Corporate Communications', 'Media Handling'],
+                        'education': ['Bachelor in Mass Communication', 'CGPA 3.6'],
+                        'experience': ['5 years at Sime Darby'],
+                        'languages': ['Bahasa Malaysia', 'English'],
+                        'location': 'Kuala Lumpur',
+                        'expected_salary': 7500,
+                        'industries': ['Corporate', 'Government'],
+                        'work_type_preference': 'On-site',
+                        'similarity': 0.81
+                    },
+
+                    {
+                        'user_id': 223,
+                        'name': 'Kelvin Goh Jun Wen',
+                        'email': 'kelvingoh@gmail.com',
+                        'skills': ['Data Engineering', 'ETL', 'BigQuery', 'Airflow'],
+                        'education': ['Bachelor in Data Engineering', 'CGPA 3.7'],
+                        'experience': ['3 years at GrabTech'],
+                        'languages': ['English', 'Mandarin', 'Bahasa Malaysia'],
+                        'location': 'Kuala Lumpur',
+                        'expected_salary': 9000,
+                        'industries': ['Technology', 'Transportation'],
+                        'work_type_preference': 'Hybrid',
+                        'similarity': 0.87
+                    },
+
+                    {
+                        'user_id': 224,
+                        'name': 'Fatimah bt Zakaria',
+                        'email': 'fatimahzakaria@gmail.com',
+                        'skills': ['Teaching', 'Curriculum Development', 'E-learning'],
+                        'education': ['Master in Education', 'CGPA 3.9'],
+                        'experience': ['6 years at Universiti Malaya'],
+                        'languages': ['Bahasa Malaysia', 'English', 'Arabic'],
+                        'location': 'Kuala Lumpur',
+                        'expected_salary': 9000,
+                        'industries': ['Education'],
+                        'work_type_preference': 'On-site',
+                        'similarity': 0.88
+                    },
+
+                    {
+                        'user_id': 225,
+                        'name': 'Tan Siew Fong',
+                        'email': 'siewfong@gmail.com',
+                        'skills': ['Finance Analysis', 'Excel', 'Power BI', 'Financial Forecasting'],
+                        'education': ['Bachelor in Finance', 'CGPA 3.6'],
+                        'experience': ['5 years at Public Bank Berhad'],
+                        'languages': ['English', 'Mandarin'],
+                        'location': 'Selangor',
+                        'expected_salary': 8500,
+                        'industries': ['Finance', 'Banking'],
+                        'work_type_preference': 'Hybrid',
+                        'similarity': 0.83
+                    },
+
+                    {
+                        'user_id': 226,
+                        'name': 'Zainul Abidin bin Musa',
+                        'email': 'zainul.musa@gmail.com',
+                        'skills': ['Software Testing', 'Selenium', 'JIRA', 'Agile QA'],
+                        'education': ['Bachelor in Software Engineering', 'CGPA 3.4'],
+                        'experience': ['4 years at Fusionex International'],
+                        'languages': ['Bahasa Malaysia', 'English'],
+                        'location': 'Cyberjaya',
+                        'expected_salary': 7000,
+                        'industries': ['Technology'],
+                        'work_type_preference': 'Remote',
+                        'similarity': 0.79
+                    },
+
+                    {
+                        'user_id': 227,
+                        'name': 'Sabrina bt Hashim',
+                        'email': 'sabrina.hashim@gmail.com',
+                        'skills': ['Content Writing', 'SEO', 'WordPress', 'Copywriting'],
+                        'education': ['Bachelor in English Literature', 'CGPA 3.5'],
+                        'experience': ['3 years at The Star Media Group'],
+                        'languages': ['Bahasa Malaysia', 'English'],
+                        'location': 'Petaling Jaya',
+                        'expected_salary': 6000,
+                        'industries': ['Media', 'Marketing'],
+                        'work_type_preference': 'Remote',
+                        'similarity': 0.76
+                    },
+
+                    {
+                        'user_id': 228,
+                        'name': 'Raj a/l Sundram',
+                        'email': 'raj.sundram@gmail.com',
+                        'skills': ['Logistics Management', 'Inventory Systems', 'SAP'],
+                        'education': ['Diploma in Logistics and Supply Chain'],
+                        'experience': ['7 years at DHL Malaysia'],
+                        'languages': ['English', 'Tamil', 'Bahasa Malaysia'],
+                        'location': 'Johor Bahru',
+                        'expected_salary': 7500,
+                        'industries': ['Logistics', 'Retail'],
+                        'work_type_preference': 'On-site',
+                        'similarity': 0.80
+                    },
+
+                    {
+                        'user_id': 229,
+                        'name': 'Noraini bt Ismail',
+                        'email': 'noraini@gmail.com',
+                        'skills': ['Administrative Support', 'Scheduling', 'Office Management'],
+                        'education': ['Diploma in Office Management'],
+                        'experience': ['5 years as Executive Assistant at MARA'],
+                        'languages': ['Bahasa Malaysia', 'English'],
+                        'location': 'Putrajaya',
+                        'expected_salary': 5500,
+                        'industries': ['Government'],
+                        'work_type_preference': 'On-site',
+                        'similarity': 0.74
+                    },
+
+                    {
+                        'user_id': 230,
+                        'name': 'John Lim Wei Han',
+                        'email': 'johnlim@gmail.com',
+                        'skills': ['Game Development', 'Unity', 'C#', 'Game Design'],
+                        'education': ['Bachelor in Game Technology', 'CGPA 3.6'],
+                        'experience': ['3 years at Streamline Studios'],
+                        'languages': ['English', 'Mandarin'],
+                        'location': 'Kuala Lumpur',
+                        'expected_salary': 7500,
+                        'industries': ['Gaming', 'Tech'],
+                        'work_type_preference': 'Remote',
+                        'similarity': 0.82
+                    }
+
+
+
+                ];
+                
+                return sampleProfiles.sort((a, b) => a.expected_salary - b.expected_salary).slice(0, topN);
+            }
+        }
+
+        class JobPortalChatbot {
+            constructor(recommendationEngine) {
+                this.recommendationEngine = recommendationEngine;
+                this.context = {};
+            }
+            
+            respond(message, sessionData) {
+                message = message.trim().toLowerCase();
+                
+                // Create a deep copy of sessionData
+                sessionData = JSON.parse(JSON.stringify(sessionData));
+                
+                // Ensure conversation_context exists
+                if (!sessionData.conversation_context) {
+                    sessionData.conversation_context = {
+                        'awaiting_input': null, 
+                        'current_job': null, 
+                        'current_application': null, 
+                        'profile_stage': 0
+                    };
+                }
+                
+                // Reset context if user starts over
+                if (['start over', 'reset', 'new session', 'restart'].some(word => message.includes(word))) {
+                    sessionData.conversation_context = {
+                        'awaiting_input': null, 
+                        'current_job': null, 
+                        'current_application': null, 
+                        'profile_stage': 0
+                    };
+                    delete sessionData.user_type;
+                    return { response: "Okay, let's start fresh. How can I help you today?", sessionData };
+                }
+                
+                // Check for greetings
+                if (['hi', 'hello', 'hey', 'helo', 'hai', 'halo'].some(word => message.includes(word))) {
+                    const responses = [
+                        "Hello and selamat datang! 👋 Welcome to the Malaysian Job Portal Assistant. Are you a job seeker or an employer?",
+                        "Hi there! 😊 Welcome to Malaysia's smart job matching platform. Are you looking for jobs or hiring talent?",
+                        "Selamat sejahtera! 🤝 I'm your job portal assistant. Are you a job seeker or an employer today?"
+                    ];
+                    return { response: responses[Math.floor(Math.random() * responses.length)], sessionData };
+                }
+                
+                // Check for Malaysian language greetings
+                if (['apa khabar', 'how are you', 'salam'].some(phrase => message.includes(phrase))) {
+                    return { response: "Khabar baik! 😊 I'm here to help with your job search or hiring needs. Are you a job seeker or an employer?", sessionData };
+                }
+                
+                // Determine user type if not already set
+                if (!sessionData.user_type) {
+                    if (['job seeker', 'looking for job', 'cari kerja', 'unemployed', 'cari pekerjaan'].some(phrase => message.includes(phrase))) {
+                        sessionData.user_type = 'job_seeker';
+                        sessionData.conversation_context = {
+                            'awaiting_input': null,
+                            'current_job': null,
+                            'current_application': null,
+                            'profile_stage': 1  // Stage 1 is asking for name
+                        };
+                        // Initialize job_seeker_profile if not exists
+                        if (!sessionData.job_seeker_profile) {
+                            sessionData.job_seeker_profile = {};
+                        }
+                        return { 
+                            response: "Terbaik! 💼 I can help you find job opportunities in Malaysia. " + 
+                                     "First, please tell me your name so I can assist you better.", 
+                            sessionData 
+                        };
+                    }
+                    
+                    if (['employer', 'recruiter', 'hirer', 'company', 'syarikat', 'business'].some(phrase => message.includes(phrase))) {
+                        sessionData.user_type = 'employer';
+                        sessionData.conversation_context = {
+                            'awaiting_input': null,
+                            'current_job': null,
+                            'current_application': null,
+                            'profile_stage': 1
+                        };
+                        return { 
+                            response: "Welcome employer! 👔 I can help you find suitable candidates and manage job postings. " +
+                                     "Malaysia has many talented professionals. What's your company name?", 
+                            sessionData 
+                        };
+                    } else {
+                        return { 
+                            response: "I'm not sure if you're a job seeker or employer. " +
+                                     "Could you clarify? In Malaysia, we help both job seekers and employers.", 
+                            sessionData 
+                        };
+                    }
+                }
+                
+                // Handle job seeker interactions
+                if (sessionData.user_type === 'job_seeker') {
+                    return this._handleJobSeeker(message, sessionData);
+                }
+                
+                // Handle employer interactions
+                else if (sessionData.user_type === 'employer') {
+                    return this._handleEmployer(message, sessionData);
+                }
+                
+                return { 
+                    response: "Maaf, I'm not sure how to help with that. In Malaysia, we can help with " +
+                             "job search, career advice, or hiring needs. Could you rephrase your question?", 
+                    sessionData 
+                };
+            }
+
+            _extractProfileInfo(message) {
+                const extracted = {};
+                
+                // Extract skills
+                const skillKeywords = ['skill', 'skills', 'kemahiran', 'proficient in', 'expert in', 'able to', 'can work with'];
+                for (const kw of skillKeywords) {
+                    if (message.includes(kw)) {
+                        const startIdx = message.indexOf(kw) + kw.length;
+                        const skillText = message.substring(startIdx).trim();
+                        const skills = skillText.split(/,|and|&/).map(s => s.trim()).filter(s => s);
+                        extracted.skills = skills;
+                        break;
+                    }
+                }
+                        
+                // Extract education
+                const eduKeywords = ['education', 'degree', 'diploma', 'qualification', 'kelayakan', 'spm', 'stpm', 'cgpa', 'studied'];
+                for (const kw of eduKeywords) {
+                    if (message.includes(kw)) {
+                        const startIdx = message.indexOf(kw) + kw.length;
+                        const eduText = message.substring(startIdx).trim();
+                        extracted.education = [eduText];
+                        break;
+                    }
+                }
+                        
+                // Extract experience
+                const expKeywords = ['experience', 'worked as', 'pengalaman', 'kerja sebagai', 'worked at', 'experience in'];
+                for (const kw of expKeywords) {
+                    if (message.includes(kw)) {
+                        const startIdx = message.indexOf(kw) + kw.length;
+                        const expText = message.substring(startIdx).trim();
+                        extracted.experience = [expText];
+                        break;
+                    }
+                }
+                        
+                // Extract location preferences
+                for (const loc of MALAYSIA_LOCATIONS) {
+                    if (message.includes(loc.toLowerCase())) {
+                        if (!extracted.preferred_locations) {
+                            extracted.preferred_locations = [];
+                        }
+                        extracted.preferred_locations.push(loc);
+                    }
+                }
+                        
+                // Extract salary expectations
+                const salaryPattern = /rm\s*(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)|\b(\d{1,3}(?:,\d{3})*(?:\.\d{2})?)\s*ringgit/i;
+                const matches = message.match(salaryPattern);
+                if (matches) {
+                    const salaryStr = matches[1] || matches[2];
+                    if (salaryStr) {
+                        const salary = parseFloat(salaryStr.replace(/,/g, ''));
+                        extracted.expected_salary = salary;
+                    }
+                }
+                        
+                // Extract industry preferences
+                for (const industry of MALAYSIA_INDUSTRIES) {
+                    if (message.includes(industry.toLowerCase())) {
+                        if (!extracted.industry_preferences) {
+                            extracted.industry_preferences = [];
+                        }
+                        extracted.industry_preferences.push(industry);
+                    }
+                }
+                        
+                // Extract work type preference
+                const workTypes = ['remote', 'on-site', 'hybrid', 'work from home', 'wfh', 'flexible'];
+                for (const wt of workTypes) {
+                    if (message.includes(wt)) {
+                        extracted.work_type_preference = wt.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        break;
+                    }
+                }
+                        
+                return extracted;
+            }
+            
+            _handleJobSeeker(message, sessionData) {
+                const context = sessionData.conversation_context || {};
+                
+                // Multi-stage profile setup
+                if (context.profile_stage === 1) {  // Asking for name
+                    if (!sessionData.job_seeker_profile) {
+                        sessionData.job_seeker_profile = {};
+                    }
+                        
+                    sessionData.job_seeker_profile.name = message.replace(/\b\w/g, l => l.toUpperCase());
+                    sessionData.conversation_context.profile_stage = 2;  // Move to email stage
+                    return { 
+                        response: `Nice to meet you, ${message.replace(/\b\w/g, l => l.toUpperCase())}! What's your email address for job applications?`, 
+                        sessionData 
+                    };
+                }
+                    
+                if (context.profile_stage === 2) {  // Asking for email
+                    const emailPattern = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
+                    const emailMatch = message.match(emailPattern);
+                    if (emailMatch) {
+                        sessionData.job_seeker_profile.email = emailMatch[0];
+                        sessionData.conversation_context.profile_stage = 3;
+                        return { 
+                            response: "Thanks! Now let's build your profile. " +
+                                     "Please tell me about your skills, education, and experience. " +
+                                     "For example: 'I have Python skills and a degree in Computer Science'", 
+                            sessionData 
+                        };
+                    } else {
+                        return { response: "Please provide a valid email address (e.g., name@example.com).", sessionData };
+                    }
+                }
+                        
+                if (context.profile_stage === 3) {  // Initial profile setup
+                    const extractedInfo = this._extractProfileInfo(message);
+                    
+                    for (const [key, value] of Object.entries(extractedInfo)) {
+                        if (sessionData.job_seeker_profile[key]) {
+                            if (Array.isArray(sessionData.job_seeker_profile[key])) {
+                                sessionData.job_seeker_profile[key].push(...value);
+                            } else {
+                                sessionData.job_seeker_profile[key] = value;
+                            }
+                        } else {
+                            sessionData.job_seeker_profile[key] = value;
+                        }
+                    }
+                    
+                    if (sessionData.job_seeker_profile.skills || sessionData.job_seeker_profile.experience) {
+                        context.profile_stage = 4;
+                        sessionData.conversation_context = context;
+                        return { 
+                            response: "Profile setup complete! 🎉 I can now help you find jobs. " +
+                                     "You can say 'recommend jobs' or ask for 'jobs in Kuala Lumpur'.", 
+                            sessionData 
+                        };
+                    } else {
+                        return { 
+                            response: "Could you tell me more about your skills and experience? " +
+                                     "For example: 'I have 3 years of marketing experience' or " +
+                                     "'My skills include Python and data analysis'", 
+                            sessionData 
+                        };
+                    }
+                }
+                
+                // Check if we're in the middle of a multi-step process
+                if (context.awaiting_input) {
+                    return this._handleOngoingConversation(message, sessionData);
+                }
+                    
+                // Extract profile information
+                const extractedInfo = this._extractProfileInfo(message);
+                
+                // Update profile with extracted information
+                for (const [key, value] of Object.entries(extractedInfo)) {
+                    if (sessionData.job_seeker_profile[key]) {
+                        if (Array.isArray(sessionData.job_seeker_profile[key])) {
+                            sessionData.job_seeker_profile[key].push(...value);
+                        } else {
+                            sessionData.job_seeker_profile[key] = value;
+                        }
+                    } else {
+                        sessionData.job_seeker_profile[key] = value;
+                    }
+                }
+                
+                // Check if user is providing profile information
+                if (['skill', 'experience', 'education', 'location', 'salary', 'industry', 'work type'].some(key => message.includes(key))) {
+                    let response = "Terima kasih for updating your profile. ";
+                    
+                    if (sessionData.job_seeker_profile.skills || sessionData.job_seeker_profile.experience) {
+                        response += "Would you like me to recommend some jobs for you? You can say 'recommend jobs' or ask for 'jobs in Kuala Lumpur'.";
+                    } else {
+                        response += "Could you tell me more about your skills and experience? For example, 'I know Python and have 2 years experience'.";
+                    }
+                        
+                    return { response, sessionData };
+                }
+                
+                // Recommend jobs
+                if (['recommend', 'suggest', 'find job', 'cari kerja', 'show jobs', 'job match'].some(phrase => message.includes(phrase))) {
+                    if (!(sessionData.job_seeker_profile.skills || sessionData.job_seeker_profile.experience)) {
+                        return { 
+                            response: "First, please tell me about your skills, education, and job preferences. " +
+                                     "In Malaysia, popular skills include programming, digital marketing, and accounting.", 
+                            sessionData 
+                        };
+                    }
+                    
+                    const jobListings = sessionData.job_listings || [];
+                    
+                    const recommendedJobs = this.recommendationEngine.recommendJobs(
+                        sessionData.job_seeker_profile, 
+                        jobListings
+                    );
+                    
+                    if (recommendedJobs.length === 0) {
+                        return { 
+                            response: "Maaf, I couldn't find matching jobs based on your profile. " +
+                                     "In Malaysia, you might want to try broadening your location or skill requirements. " +
+                                     "Would you like to adjust your preferences?", 
+                            sessionData 
+                        };
+                    }
+                    
+                    let response = "Here are some jobs in Malaysia that might interest you:\n\n";
+                    for (let i = 0; i < recommendedJobs.length; i++) {
+                        const job = recommendedJobs[i];
+                        response += `${i+1}. ${job.title} at ${job.company}\n`;
+                        response += `📍 *Location:* ${job.location}\n`;
+                        response += `💰 *Salary:* RM${job.salary_min.toLocaleString()} - RM${job.salary_max.toLocaleString()}\n`;
+                        response += `🏢 *Type:* ${job.job_type} | *Industry:* ${job.industry}\n`;
+                        response += `📝 *Requirements:* ${job.requirements.substring(0, 100)}...\n`;
+                        response += `ℹ To apply, say 'apply for ${job.title}'\n\n`;
+                    }
+                    
+                    response += "Would you like to apply for any of these? You can say 'apply for Software Engineer' or " +
+                               "'show more jobs'. Many Malaysian companies offer EPF and SOCSO benefits.";
+                    return { response, sessionData };
+                }
+                
+                // Application process
+                if (['apply', 'application', 'memohon', 'submit'].some(phrase => message.includes(phrase))) {
+                    const jobListings = sessionData.job_listings || [];
+                    
+                    for (const job of jobListings) {
+                        if (message.includes(job.title.toLowerCase())) {
+                            sessionData.active_job_id = job.id;
+                            sessionData.conversation_context = {
+                                'awaiting_input': 'cover_letter',
+                                'current_job': job.id
+                            };
+                            return { 
+                                response: `Excellent choice to apply for *${job.title}* at *${job.company}*! 💼\n\n` +
+                                         "In Malaysia, a good cover letter can help. Please write a short cover letter " +
+                                         "or say 'skip' if you don't want to include one.", 
+                                sessionData 
+                            };
+                        }
+                    }
+                    
+                    return { 
+                        response: "To apply for a job, please specify which position you're interested in, like " +
+                                 "'apply for Data Scientist'. I'll guide you through the Malaysian application process.", 
+                        sessionData 
+                    };
+                }
+                
+                // Salary expectations guidance for Malaysia
+                if (['salary', 'gaji', 'expected salary', 'how much', 'salary range'].some(phrase => message.includes(phrase))) {
+                    if (sessionData.job_seeker_profile.expected_salary) {
+                        const salaryLevel = sessionData.job_seeker_profile.expected_salary < 4000 ? 'entry' : 'mid';
+                        return { 
+                            response: `You mentioned expecting RM${sessionData.job_seeker_profile.expected_salary.toLocaleString()}. ` +
+                                     `In Malaysia, this is competitive for ${salaryLevel} level positions. ` +
+                                     "Would you like me to find jobs matching this range?", 
+                            sessionData 
+                        };
+                    } else {
+                        return { 
+                            response: "In Malaysia, salaries vary by experience: \n" +
+                                     "- Fresh graduates: RM2,500-RM4,000\n" +
+                                     "- Mid-level professionals: RM4,000-RM8,000\n" +
+                                     "- Senior roles: RM8,000-RM15,000\n" +
+                                     "- Executives: RM10,000+\n\n" +
+                                     "What salary range are you looking for?", 
+                            sessionData 
+                        };
+                    }
+                }
+                
+                // Career advice for Malaysian market
+                if (['advice', 'tips', 'how to get job', 'resume', 'career tip'].some(phrase => message.includes(phrase))) {
+                    return { 
+                        response: "*Malaysian Job Market Tips:*\n\n" +
+                                 "1. Highlight your language skills (Bahasa Malaysia, English, Chinese)\n" +
+                                 "2. Mention any professional certifications (e.g., ACCA, PMP)\n" +
+                                 "3. Include your expected salary (common in Malaysia)\n" +
+                                 "4. List your SPM/STPM results if you're a fresh graduate\n" +
+                                 "5. Mention EPF/SOCSO knowledge\n\n" +
+                                 "Would you like help with your resume or interview preparation?", 
+                        sessionData 
+                    };
+                }
+                
+                // Job search by location
+                const locationMatch = MALAYSIA_LOCATIONS.find(loc => message.includes(loc.toLowerCase()));
+                if (locationMatch) {
+                    const location = locationMatch;
+                    const jobListings = sessionData.job_listings || [];
+                    
+                    const locationJobs = jobListings.filter(
+                        job => job.location.toLowerCase() === location.toLowerCase()
+                    );
+                    
+                    if (locationJobs.length === 0) {
+                        return { response: `Maaf, no jobs found in ${location} at the moment. Would you like to try another location?`, sessionData };
+                    }
+                    
+                    let response = `*Jobs available in ${location}:*\n\n`;
+                    for (let i = 0; i < Math.min(3, locationJobs.length); i++) {
+                        const job = locationJobs[i];
+                        response += `${i+1}. *${job.title}* at ${job.company} - RM${job.salary_min.toLocaleString()} to RM${job.salary_max.toLocaleString()}\n`;
+                    }
+                    
+                    if (locationJobs.length > 3) {
+                        response += `\nShowing 3 of ${locationJobs.length} jobs. Say 'show more jobs in ${location}' to see more.`;
+                    }
+                    
+                    response += "\n\nTo apply, say 'apply for [job title]'";
+                    return { response, sessionData };
+                }
+                
+                // Default response with Malaysian context
+                return { 
+                    response: "I can help you with:\n" +
+                             "- Job recommendations across Malaysia 🌏\n" +
+                             "- Salary guidance for Malaysian market 💰\n" +
+                             "- Application process for Malaysian companies 📝\n" +
+                             "- Career advice specific to Malaysia 🎓\n\n" +
+                             "What would you like assistance with today?", 
+                    sessionData 
+                };
+            }
+
+            _handleEmployer(message, sessionData) {
+                const context = sessionData.conversation_context || {};
+                
+                // Multi-stage employer setup
+                if (context.profile_stage === 1) {  // Asking for company name
+                    if (!sessionData.employer_profile) {
+                        sessionData.employer_profile = {};
+                    }
+                    sessionData.employer_profile.company_name = message.replace(/\b\w/g, l => l.toUpperCase());
+                    context.profile_stage = 2;
+                    sessionData.conversation_context = context;
+                    return { response: "Great! What's your company email address for candidate communications?", sessionData };
+                }
+                    
+                if (context.profile_stage === 2) {  // Asking for email
+                    const emailPattern = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
+                    const emailMatch = message.match(emailPattern);
+                    if (emailMatch) {
+                        sessionData.employer_profile.company_email = emailMatch[0];
+                        context.profile_stage = 3;
+                        sessionData.conversation_context = context;
+                        return { 
+                            response: "Thanks! Now let's set up your company profile. " +
+                                     "What industry is your company in? (e.g., Technology, Banking & Finance)", 
+                            sessionData 
+                        };
+                    } else {
+                        return { response: "Please provide a valid email address (e.g., hr@company.com).", sessionData };
+                    }
+                }
+                        
+                if (context.profile_stage === 3) {  // Asking for industry
+                    const industryMatch = MALAYSIA_INDUSTRIES.find(ind => message.includes(ind.toLowerCase()));
+                    if (industryMatch) {
+                        sessionData.employer_profile.industry = industryMatch;
+                        context.profile_stage = 4;
+                        sessionData.conversation_context = context;
+                        return { 
+                            response: "Got it! What locations in Malaysia are you hiring for? (e.g., Kuala Lumpur, Penang)", 
+                            sessionData 
+                        };
+                    }
+                    
+                    return { 
+                        response: "Please specify an industry from common Malaysian industries: " + MALAYSIA_INDUSTRIES.join(", "), 
+                        sessionData 
+                    };
+                }
+                    
+                if (context.profile_stage === 4) {  // Asking for locations
+                    const extractedLocations = MALAYSIA_LOCATIONS.filter(loc => message.includes(loc.toLowerCase()));
+                    
+                    if (extractedLocations.length > 0) {
+                        sessionData.employer_profile.locations = extractedLocations;
+                        context.profile_stage = 5;
+                        sessionData.conversation_context = context;
+                        return { 
+                            response: "Perfect! Your company profile is complete. 🎉 " +
+                                     "Now you can post jobs or find candidates. " +
+                                     "Say 'post a job' or 'find candidates' to get started.", 
+                            sessionData 
+                        };
+                    } else {
+                        return { 
+                            response: "Please specify at least one location in Malaysia. (e.g., Kuala Lumpur, Johor)", 
+                            sessionData 
+                        };
+                    }
+                }
+                
+                // Check if we're in the middle of a multi-step process
+                if (context.awaiting_input) {
+                    return this._handleOngoingConversation(message, sessionData);
+                }
+                    
+                // Suggest candidates
+                if (['candidate', 'applicant', 'find candidate', 'cari calon', 'talent'].some(phrase => message.includes(phrase))) {
+                    const jobListings = sessionData.job_listings || [];
+                    
+                    if (jobListings.length === 0) {
+                        return { 
+                            response: "You don't have any job postings yet. In Malaysia, popular job titles include " +
+                                     "'Software Engineer', 'Account Executive', and 'Marketing Specialist'. " +
+                                     "Would you like to create a job posting now?", 
+                            sessionData 
+                        };
+                    }
+                    
+                    const jobId = jobListings[0].id;
+                    const recommendedCandidates = this.recommendationEngine.recommendCandidates(jobId);
+                    
+                    if (recommendedCandidates.length === 0) {
+                        return { 
+                            response: "Maaf, I couldn't find suitable candidates for your job posting. " +
+                                     "In Malaysia, you might want to try adjusting the requirements or salary range.", 
+                            sessionData 
+                        };
+                    }
+                    
+                    let response = "*Top candidates for your job:*\n\n";
+                    for (let i = 0; i < recommendedCandidates.length; i++) {
+                        const candidate = recommendedCandidates[i];
+                        response += `${i+1}. ${candidate.name}\n`;
+                        response += `📧 Email: ${candidate.email}\n`;
+                        response += `📍 Location: ${candidate.location || 'Not specified'}\n`;
+                        response += `🛠 Skills: ${candidate.skills.slice(0, 3).join(", ")}...\n`;
+                        response += `🎓 Education: ${candidate.education[0]}\n`;
+                        response += `💰 Expected Salary: RM${candidate.expected_salary || 'Negotiable'}\n`;
+                        response += `⭐ Match Score: ${(candidate.similarity * 100).toFixed(1)}%\n\n`;
+                    }
+                    
+                    response += "In Malaysia, you can contact candidates directly or " +
+                                "would you like me to help set up interviews?";
+                    return { response, sessionData };
+                }
+                
+                // Job posting help
+                if (['post job', 'create listing', 'list job', 'iklan pekerjaan', 'create job'].some(phrase => message.includes(phrase))) {
+                    sessionData.conversation_context = { awaiting_input: 'job_posting' };
+                    return { 
+                        response: "Let's create a job posting for Malaysia. Please provide:\n" +
+                                 "1. Job title (e.g., 'Senior Accountant')\n" +
+                                 "2. Job description\n" +
+                                 "3. Requirements\n" +
+                                 "4. Location in Malaysia\n" +
+                                 "5. Salary range (e.g., 'RM5000-RM7000')\n" +
+                                 "You can provide all at once or one by one.", 
+                        sessionData 
+                    };
+                }
+                
+                // View applications
+                if (['applications', 'view applications', 'see applicants', 'review applications'].some(phrase => message.includes(phrase))) {
+                    const applications = sessionData.applications || [];
+                    
+                    if (applications.length === 0) {
+                        return { response: "You don't have any applications yet.", sessionData };
+                    }
+                        
+                    const jobId = sessionData.active_job_id || (sessionData.job_listings && sessionData.job_listings[0]?.id);
+                    const jobApplications = applications.filter(app => app.job_id === jobId);
+                    
+                    if (jobApplications.length === 0) {
+                        return { response: "No applications for this job yet.", sessionData };
+                    }
+                        
+                    const jobTitle = sessionData.job_listings?.find(job => job.id === jobId)?.title || "the position";
+                    
+                    let response = `*Applications for ${jobTitle}:*\n\n`;
+                    for (const app of jobApplications) {
+                        response += `${app.applicant_name}** - ${app.status}\n`;
+                        response += `📧 Email: ${app.applicant_email}\n`;
+                        response += `📅 Applied: ${app.application_date}\n`;
+                        response += `💼 Cover Letter: ${app.cover_letter.substring(0, 50)}...\n\n`;
+                    }
+                    
+                    return { response, sessionData };
+                }
+                
+                // Malaysian labor laws and hiring practices
+                if (['malaysia law', 'regulation', 'hiring process', 'pekerja act', 'employment law'].some(phrase => message.includes(phrase))) {
+                    return { 
+                        response: "*Key Malaysian Employment Regulations:*\n\n" +
+                                 "1. *Employment Act 1955*: Governs basic employment terms\n" +
+                                 "2. *Minimum Wage*: RM1,500-RM1,700 depending on location\n" +
+                                 "3. *EPF (Employees Provident Fund)*: 11% employee + 12-13% employer contributions\n" +
+                                 "4. *SOCSO (Social Security)*: Mandatory coverage for work injuries\n" +
+                                 "5. *Typical Probation Period*: 3-6 months\n\n" +
+                                 "Would you like more details on any specific regulation?", 
+                        sessionData 
+                    };
+                }
+                
+                // Salary benchmarking for Malaysia
+                if (['salary range', 'gaji pasaran', 'competitive salary', 'salary benchmark'].some(phrase => message.includes(phrase))) {
+                    return { 
+                        response: "*Malaysian Salary Benchmarks:*\n\n" +
+                                 "1. *Fresh graduates*: RM2,500-RM4,000\n" +
+                                 "2. *IT professionals*: RM4,000-RM12,000\n" +
+                                 "3. *Finance managers*: RM8,000-RM15,000\n" +
+                                 "4. *Retail assistants*: RM1,500-RM2,500\n\n" +
+                                 "Would you like me to suggest a competitive salary for your job posting?", 
+                        sessionData 
+                    };
+                }
+                
+                // Default response for employers
+                return { 
+                    response: "*For Malaysian employers, I can help with:*\n\n" +
+                             "1. Creating job postings that attract local talent 📋\n" +
+                             "2. Finding qualified candidates across Malaysia 🔍\n" +
+                             "3. Understanding Malaysian employment regulations ⚖\n" +
+                             "4. Salary benchmarking for Malaysian market 💰\n\n" +
+                             "What would you like assistance with today?", 
+                    sessionData 
+                };
+            }
+
+            _handleOngoingConversation(message, sessionData) {
+                const context = sessionData.conversation_context || {};
+                
+                // Handle job application cover letter
+                if (context.awaiting_input === 'cover_letter') {
+                    const jobId = context.current_job;
+                    const jobListings = sessionData.job_listings || [];
+                    const job = jobListings.find(job => job.id === jobId);
+                    
+                    if (!job) {
+                        return { response: "Sorry, I couldn't find that job listing.", sessionData };
+                    }
+                    
+                    if (message.toLowerCase() !== 'skip') {
+                        const newApplication = {
+                            'application_id': (sessionData.applications?.length || 0) + 1000,
+                            'job_id': jobId,
+                            'user_id': 999,
+                            'application_date': new Date().toISOString().split('T')[0],
+                            'status': 'Submitted',
+                            'cover_letter': message,
+                            'applicant_name': sessionData.job_seeker_profile?.name || 'Applicant',
+                            'applicant_email': sessionData.job_seeker_profile?.email || ''
+                        };
+                        
+                        if (!sessionData.applications) {
+                            sessionData.applications = [];
+                        }
+                        
+                        sessionData.applications.push(newApplication);
+                        
+                        if (sessionData.job_listings) {
+                            const jobIndex = sessionData.job_listings.findIndex(j => j.id === jobId);
+                            if (jobIndex !== -1) {
+                                if (!sessionData.job_listings[jobIndex].application_count) {
+                                    sessionData.job_listings[jobIndex].application_count = 0;
+                                }
+                                sessionData.job_listings[jobIndex].application_count += 1;
+                            }
+                        }
+                        
+                        sessionData.conversation_context = {};
+                        
+                        return { 
+                            response: `✅ *Successfully applied for ${job.title} at ${job.company}!*\n\n` +
+                                     "In Malaysia, employers typically respond within 2-4 weeks. " +
+                                     "Would you like to apply for other jobs or see more recommendations?", 
+                            sessionData 
+                        };
+                    } else {
+                        const newApplication = {
+                            'application_id': (sessionData.applications?.length || 0) + 1000,
+                            'job_id': jobId,
+                            'user_id': 999,
+                            'application_date': new Date().toISOString().split('T')[0],
+                            'status': 'Submitted',
+                            'cover_letter': '',
+                            'applicant_name': sessionData.job_seeker_profile?.name || 'Applicant',
+                            'applicant_email': sessionData.job_seeker_profile?.email || ''
+                        };
+                        
+                        if (!sessionData.applications) {
+                            sessionData.applications = [];
+                        }
+                        
+                        sessionData.applications.push(newApplication);
+                        
+                        if (sessionData.job_listings) {
+                            const jobIndex = sessionData.job_listings.findIndex(j => j.id === jobId);
+                            if (jobIndex !== -1) {
+                                if (!sessionData.job_listings[jobIndex].application_count) {
+                                    sessionData.job_listings[jobIndex].application_count = 0;
+                                }
+                                sessionData.job_listings[jobIndex].application_count += 1;
+                            }
+                        }
+                        
+                        sessionData.conversation_context = {};
+                        
+                        return { 
+                            response: `✅ *Application submitted for ${job.title} without cover letter.*\n\n` +
+                                     "Some Malaysian employers may request more details later. " +
+                                     "Would you like to apply for other positions?", 
+                            sessionData 
+                        };
+                    }
+                }
+                
+                // Handle job posting creation
+                else if (context.awaiting_input === 'job_posting') {
+                    const newJob = {
+                        'id': (sessionData.job_listings?.length || 0) + 1,
+                        'title': 'New Job Position',
+                        'company': sessionData.employer_profile?.company_name || 'Your Company',
+                        'description': 'Job description goes here',
+                        'requirements': 'Requirements go here',
+                        'location': 'Kuala Lumpur',
+                        'salary_min': 5000,
+                        'salary_max': 7000,
+                        'posted_date': new Date().toISOString().split('T')[0],
+                        'employer_id': 999,
+                        'industry': 'Technology',
+                        'job_type': 'On-site',
+                        'experience_level': 'Mid Level',
+                        'benefits': 'EPF, SOCSO, Medical',
+                        'contact_email': sessionData.employer_profile?.company_email || 'hr@company.com',
+                        'application_count': 0
+                    };
+                    
+                    if (!sessionData.job_listings) {
+                        sessionData.job_listings = [];
+                    }
+                    
+                    sessionData.job_listings.push(newJob);
+                    sessionData.conversation_context = {};
+                    
+                    return { 
+                        response: "✅ *Your job posting has been created!*\n\n" +
+                                 "It's now visible to Malaysian job seekers on our platform. " +
+                                 "Would you like to share it to JobStreet or LinkedIn as well?", 
+                        sessionData 
+                    };
+                }
+                
+                return { response: "I'm not sure how to proceed with this. Could you clarify your request?", sessionData };
+            }
+        }
+
+        // Initialize the NLP pipeline and recommendation engine
+        const nlpPipeline = new NLPPipeline();
+        const recommendationEngine = new RecommendationEngine(nlpPipeline);
+
+        // Create the chatbot instance
+        const chatbot = new JobPortalChatbot(recommendationEngine);
+
+        // Initialize session data with sample job listings
+        let sessionData = {
+            job_listings: [
+                {
+                    id: 1,
+                    title: 'Software Engineer',
+                    company: 'Tech Solutions Malaysia',
+                    description: 'Looking for a skilled software engineer to join our team in KL.',
+                    requirements: '3+ years experience with JavaScript and Python. Degree in Computer Science preferred.',
+                    location: 'Kuala Lumpur',
+                    salary_min: 6000,
+                    salary_max: 9000,
+                    posted_date: '2023-05-15',
+                    employer_id: 101,
+                    industry: 'Technology',
+                    job_type: 'Hybrid',
+                    experience_level: 'Mid Level',
+                    benefits: 'EPF, SOCSO, Medical, Annual bonus',
+                    contact_email: 'hr@techsolutions.my',
+                    application_count: 0
+                },
+                {
+                    id: 2,
+                    title: 'Marketing Executive',
+                    company: 'Global Retail Sdn Bhd',
+                    description: 'Seeking a creative marketing professional for our retail division.',
+                    requirements: 'Degree in Marketing or related field. 2+ years experience in digital marketing.',
+                    location: 'Penang',
+                    salary_min: 4500,
+                    salary_max: 6500,
+                    posted_date: '2023-06-01',
+                    employer_id: 102,
+                    industry: 'Retail',
+                    job_type: 'On-site',
+                    experience_level: 'Entry Level',
+                    benefits: 'EPF, SOCSO, Commission',
+                    contact_email: 'careers@globalretail.com',
+                    application_count: 0
+                },
+                {
+                    id: 3,
+                    title: 'Data Scientist',
+                    company: 'Fusion Analytics Berhad',
+                    description: 'Hiring a data scientist to develop predictive models using machine learning techniques.',
+                    requirements: 'Proficiency in Python, R, and machine learning frameworks. Minimum 2 years experience.',
+                    location: 'Cyberjaya',
+                    salary_min: 7000,
+                    salary_max: 11000,
+                    posted_date: '2023-06-10',
+                    employer_id: 103,
+                    industry: 'Artificial Intelligence',
+                    job_type: 'Remote',
+                    experience_level: 'Mid Level',
+                    benefits: 'EPF, SOCSO, Remote Work Allowance, Health Insurance',
+                    contact_email: 'jobs@fusionanalytics.my',
+                    application_count: 0
+                },
+                {
+                    id: 4,
+                    title: 'UI/UX Designer',
+                    company: 'PixelCraft Studio',
+                    description: 'Seeking a creative UI/UX designer for mobile and web applications.',
+                    requirements: 'Strong portfolio. Proficiency in Figma, Adobe XD. Knowledge of HTML/CSS is a plus.',
+                    location: 'Petaling Jaya',
+                    salary_min: 5000,
+                    salary_max: 8000,
+                    posted_date: '2023-06-12',
+                    employer_id: 104,
+                    industry: 'Design & Creative',
+                    job_type: 'Hybrid',
+                    experience_level: 'Entry Level',
+                    benefits: 'EPF, SOCSO, Annual Leave, Creative Environment',
+                    contact_email: 'design@pixelcraft.my',
+                    application_count: 0
+                },
+                {
+                    id: 5,
+                    title: 'DevOps Engineer',
+                    company: 'CloudNet Solutions',
+                    description: 'Looking for a DevOps engineer to manage CI/CD pipelines and cloud infrastructure.',
+                    requirements: 'Experience with Docker, Kubernetes, AWS/GCP, Jenkins. 3+ years in DevOps roles.',
+                    location: 'Johor Bahru',
+                    salary_min: 8000,
+                    salary_max: 12000,
+                    posted_date: '2023-06-18',
+                    employer_id: 105,
+                    industry: 'Cloud Computing',
+                    job_type: 'On-site',
+                    experience_level: 'Senior Level',
+                    benefits: 'EPF, SOCSO, Performance Bonus, Gym Membership',
+                    contact_email: 'devops@cloudnet.my',
+                    application_count: 0
+                },
+                {
+                    id: 6,
+                    title: 'Mobile App Developer',
+                    company: 'App Innovate Sdn Bhd',
+                    description: 'Develop and maintain mobile applications on Android and iOS platforms.',
+                    requirements: 'Experience with Flutter or React Native. Knowledge of Firebase is a plus.',
+                    location: 'Shah Alam',
+                    salary_min: 5500,
+                    salary_max: 8500,
+                    posted_date: '2023-06-20',
+                    employer_id: 106,
+                    industry: 'Mobile Development',
+                    job_type: 'Hybrid',
+                    experience_level: 'Mid Level',
+                    benefits: 'EPF, SOCSO, Medical Benefits, Training Budget',
+                    contact_email: 'careers@appinnovate.my',
+                    application_count: 0
+                },
+                {
+                    id: 7,
+                    title: 'Cybersecurity Analyst',
+                    company: 'SecureTech Malaysia',
+                    description: 'Monitor and respond to cybersecurity threats in real-time.',
+                    requirements: 'Knowledge of network security, firewalls, SIEM tools. Certifications (CEH, CompTIA) preferred.',
+                    location: 'Putrajaya',
+                    salary_min: 7500,
+                    salary_max: 10500,
+                    posted_date: '2023-06-25',
+                    employer_id: 107,
+                    industry: 'Cybersecurity',
+                    job_type: 'On-site',
+                    experience_level: 'Mid Level',
+                    benefits: 'EPF, SOCSO, Travel Allowance, Security Training',
+                    contact_email: 'security@securetech.my',
+                    application_count: 0
+                },
+                {
+                    id: 8,
+                    title: 'Backend Developer',
+                    company: 'NextGen Web',
+                    description: 'Responsible for developing RESTful APIs and managing backend systems.',
+                    requirements: 'Strong in Django/Node.js, PostgreSQL, Redis. 2+ years backend experience.',
+                    location: 'Kuala Lumpur',
+                    salary_min: 6500,
+                    salary_max: 9500,
+                    posted_date: '2023-06-27',
+                    employer_id: 108,
+                    industry: 'Web Development',
+                    job_type: 'Hybrid',
+                    experience_level: 'Mid Level',
+                    benefits: 'EPF, SOCSO, Remote Flexibility, Tech Conferences',
+                    contact_email: 'backend@nextgenweb.my',
+                    application_count: 0
+                },
+                {
+                    id: 9,
+                    title: 'AI Chatbot Developer',
+                    company: 'BotLogic AI',
+                    description: 'Design and deploy NLP-based chatbots using open-source LLMs and ML pipelines.',
+                    requirements: 'Experience with NLP, Python, TensorFlow/PyTorch, Flask, LangChain.',
+                    location: 'Selangor',
+                    salary_min: 8000,
+                    salary_max: 11500,
+                    posted_date: '2023-06-26',
+                    employer_id: 109,
+                    industry: 'Artificial Intelligence',
+                    job_type: 'Remote',
+                    experience_level: 'Senior Level',
+                    benefits: 'EPF, SOCSO, Work From Anywhere, Equity Options',
+                    contact_email: 'hr@botlogic.my',
+                    application_count: 0
+                },
+                {
+                    id: 10,
+                    title: 'IT Support Specialist',
+                    company: 'DigitalCare Solutions',
+                    description: 'Provide technical support to enterprise clients and resolve software/hardware issues.',
+                    requirements: 'Diploma or Degree in IT. Strong troubleshooting skills. Fresh grads welcome.',
+                    location: 'Melaka',
+                    salary_min: 3000,
+                    salary_max: 4500,
+                    posted_date: '2023-06-15',
+                    employer_id: 110,
+                    industry: 'IT Services',
+                    job_type: 'On-site',
+                    experience_level: 'Entry Level',
+                    benefits: 'EPF, SOCSO, Medical, Training',
+                    contact_email: 'support@digitalcare.my',
+                    application_count: 0
+                },
+                {
+                    id: 11,
+                    title: 'Junior Web Developer',
+                    company: 'Webverse Technologies',
+                    description: 'Looking for a junior developer to assist in front-end and back-end development tasks.',
+                    requirements: 'Basic knowledge of HTML, CSS, JavaScript, and PHP. Fresh grads are welcome.',
+                    location: 'Kota Kinabalu',
+                    salary_min: 2800,
+                    salary_max: 4000,
+                    posted_date: '2023-06-28',
+                    employer_id: 111,
+                    industry: 'Web Development',
+                    job_type: 'On-site',
+                    experience_level: 'Entry Level',
+                    benefits: 'EPF, SOCSO, Mentorship, Annual Leave',
+                    contact_email: 'dev@webverse.my',
+                    application_count: 0
+                },
+                {
+                    id: 12,
+                    title: 'Senior Java Developer',
+                    company: 'FinTech Logic Sdn Bhd',
+                    description: 'Develop high-performance Java applications for online financial systems.',
+                    requirements: '5+ years in Java development. Strong in Spring Boot, Microservices, and Oracle DB.',
+                    location: 'Kuala Lumpur',
+                    salary_min: 10000,
+                    salary_max: 14000,
+                    posted_date: '2023-06-28',
+                    employer_id: 112,
+                    industry: 'Fintech',
+                    job_type: 'Hybrid',
+                    experience_level: 'Senior Level',
+                    benefits: 'EPF, SOCSO, Bonus, Health Insurance, Flexible Hours',
+                    contact_email: 'hr@fintechlogic.my',
+                    application_count: 0
+                },
+                {
+                    id: 13,
+                    title: 'Junior Mobile App Developer',
+                    company: 'Mobiloid',
+                    description: 'Assist in developing mobile applications with React Native.',
+                    requirements: 'Basic experience in mobile development or React Native. Portfolio is a plus.',
+                    location: 'Kuantan',
+                    salary_min: 3000,
+                    salary_max: 4500,
+                    posted_date: '2023-06-27',
+                    employer_id: 113,
+                    industry: 'Mobile Apps',
+                    job_type: 'Hybrid',
+                    experience_level: 'Entry Level',
+                    benefits: 'EPF, SOCSO, Performance Bonus',
+                    contact_email: 'jobs@mobiloid.my',
+                    application_count: 0
+                },
+                {
+                    id: 14,
+                    title: 'Senior Python Developer',
+                    company: 'Neural Core AI',
+                    description: 'Build AI models, REST APIs, and automation tools using Python.',
+                    requirements: '5+ years Python experience. Knowledge in Flask, FastAPI, Pandas, Scikit-learn.',
+                    location: 'Cyberjaya',
+                    salary_min: 9500,
+                    salary_max: 13000,
+                    posted_date: '2023-06-26',
+                    employer_id: 114,
+                    industry: 'Artificial Intelligence',
+                    job_type: 'Remote',
+                    experience_level: 'Senior Level',
+                    benefits: 'EPF, SOCSO, Remote Setup Budget, Paid Conferences',
+                    contact_email: 'dev@neuralcore.my',
+                    application_count: 0
+                },
+                {
+                    id: 15,
+                    title: 'Java Developer',
+                    company: 'iBanking Malaysia',
+                    description: 'Work on secure transaction modules using Java EE and Spring.',
+                    requirements: '3+ years Java experience. Spring Boot, Hibernate, and SQL knowledge required.',
+                    location: 'Putrajaya',
+                    salary_min: 7500,
+                    salary_max: 10000,
+                    posted_date: '2023-06-27',
+                    employer_id: 115,
+                    industry: 'Banking & Finance',
+                    job_type: 'On-site',
+                    experience_level: 'Mid Level',
+                    benefits: 'EPF, SOCSO, Yearly Bonus, Health Screening',
+                    contact_email: 'careers@ibanking.my',
+                    application_count: 0
+                },
+                {
+                    id: 16,
+                    title: 'Junior Data Analyst',
+                    company: 'Insight Matrix',
+                    description: 'Assist in collecting, cleaning, and analyzing business data.',
+                    requirements: 'Degree in Statistics, CS or related. Familiarity with Excel and SQL.',
+                    location: 'Seremban',
+                    salary_min: 3200,
+                    salary_max: 4500,
+                    posted_date: '2023-06-24',
+                    employer_id: 116,
+                    industry: 'Analytics',
+                    job_type: 'On-site',
+                    experience_level: 'Entry Level',
+                    benefits: 'EPF, SOCSO, Free Lunch, Team Building',
+                    contact_email: 'analytics@insightmatrix.my',
+                    application_count: 0
+                },
+                {
+                    id: 17,
+                    title: 'Senior Frontend Engineer',
+                    company: 'NextUI Malaysia',
+                    description: 'Lead the front-end team and work on React-based SPA applications.',
+                    requirements: '5+ years in front-end. Strong in React, TypeScript, Tailwind CSS.',
+                    location: 'Kuala Lumpur',
+                    salary_min: 9500,
+                    salary_max: 13000,
+                    posted_date: '2023-06-22',
+                    employer_id: 117,
+                    industry: 'Software Development',
+                    job_type: 'Hybrid',
+                    experience_level: 'Senior Level',
+                    benefits: 'EPF, SOCSO, Equity, Training, Remote Days',
+                    contact_email: 'frontend@nextui.my',
+                    application_count: 0
+                },
+                {
+                    id: 18,
+                    title: 'Junior Java Developer',
+                    company: 'TechMinds Lab',
+                    description: 'Support senior engineers in Java-based backend development.',
+                    requirements: 'Familiar with Java, JDBC, and MySQL. Degree in Software Engineering.',
+                    location: 'Ipoh',
+                    salary_min: 3500,
+                    salary_max: 5000,
+                    posted_date: '2023-06-23',
+                    employer_id: 118,
+                    industry: 'IT Services',
+                    job_type: 'On-site',
+                    experience_level: 'Entry Level',
+                    benefits: 'EPF, SOCSO, Transport Allowance, Career Progression',
+                    contact_email: 'recruit@techminds.my',
+                    application_count: 0
+                },
+                {
+                    id: 19,
+                    title: 'Senior System Administrator',
+                    company: 'eSecure Hosting',
+                    description: 'Maintain Linux servers, handle uptime, security and backups.',
+                    requirements: 'Experience with Linux, Apache, MySQL, and monitoring tools. RHCE is a bonus.',
+                    location: 'Penang',
+                    salary_min: 8500,
+                    salary_max: 11500,
+                    posted_date: '2023-06-20',
+                    employer_id: 119,
+                    industry: 'Web Hosting',
+                    job_type: 'On-site',
+                    experience_level: 'Senior Level',
+                    benefits: 'EPF, SOCSO, Year-End Bonus, On-Call Allowance',
+                    contact_email: 'admin@esecure.my',
+                    application_count: 0
+                },
+                {
+                    id: 20,
+                    title: 'Junior QA Tester',
+                    company: 'AppTestPro',
+                    description: 'Perform manual and automated tests for web and mobile apps.',
+                    requirements: 'Basic testing knowledge. Familiarity with Selenium or Cypress is a plus.',
+                    location: 'Johor Bahru',
+                    salary_min: 2800,
+                    salary_max: 4000,
+                    posted_date: '2023-06-21',
+                    employer_id: 120,
+                    industry: 'Software Testing',
+                    job_type: 'On-site',
+                    experience_level: 'Entry Level',
+                    benefits: 'EPF, SOCSO, Training Programs, KPI Bonus',
+                    contact_email: 'qa@apptestpro.my',
+                    application_count: 0
+                }
+
+
+            ]
+        };
+
+        $(document).ready(function() {
+            // Initial greeting
+            setTimeout(() => {
+                const initialGreeting = "Hello and selamat datang! 👋 Welcome to the Malaysian Job Portal Assistant. Are you a job seeker or an employer?";
+                addMessage('bot', initialGreeting);
+            }, 500);
+
+            // Handle send button click
+            $('#chat-form').submit(function(e) {
+                e.preventDefault();
+                const userInput = $('#user-input').val().trim();
+                if (!userInput) return;
+                
+                // Add user message to chat
+                addMessage('user', userInput);
+                $('#user-input').val('');
+                
+                // Get bot response
+                const { response, sessionData: updatedSessionData } = chatbot.respond(userInput, sessionData);
+                sessionData = updatedSessionData;
+                
+                // Add bot response to chat
+                addMessage('bot', response);
+            });
+            
+            // Function to add message to chat
+            function addMessage(sender, message) {
+                const messageClass = sender === 'user' ? 'user-message' : 'bot-message';
+                const messageHtml = `
+                    <div class="message ${messageClass}">
+                        <div class="message-content">${formatMessage(message)}</div>
+                    </div>
+                `;
+                $('#chat-messages').append(messageHtml);
+                $('#chat-messages').scrollTop($('#chat-messages')[0].scrollHeight);
+            }
+            
+            // Function to format message with line breaks and bold text
+            function formatMessage(text) {
+                // Convert *bold* to <strong>bold</strong>
+                let formatted = text.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
+                // Convert line breaks to <br>
+                formatted = formatted.replace(/\n/g, '<br>');
+                return formatted;
+            }
+        });
+    </script>
+{% endblock %}

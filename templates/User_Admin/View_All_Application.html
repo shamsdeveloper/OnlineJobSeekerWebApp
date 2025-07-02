@@ -1,0 +1,145 @@
+{% extends 'User_Admin/base.html' %}
+{% load static %}
+{% block title %}Job Applications{% endblock %}
+{% block content %}
+
+<div class="container py-5" style="margin-left:140px; margin-top:-350px; width: calc(100% - 50px);"> 
+    <div class="row"> 
+        <div class="col-lg-12 col-md-12"> 
+            <div class="card shadow-lg border-0 rounded-lg" style="background-color: rgba(255, 255, 255, 0.85);"> 
+                <div class="card-header text-white text-center py-4" style="background-color: rgba(12, 12, 12, 0.9);">
+                    <h4 class="mb-0">Job Applications</h4>
+                </div>
+                <div class="card-body p-4">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead style="background-color:black;color:white;">
+                                <tr>
+                                    <th>Applicant</th>
+                                    <th>Job Title</th>
+                                    <th>Cover Letter</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for app in applications %}
+                                <tr style="background-color:rgb(61, 9, 247);color:white;">
+                                    <td>{{ app.applicant.username }}</td>
+                                    <td>{{ app.job.title }}</td>
+                                    <td>
+                                        {% if app.cover_letter %}
+                                            <button class="btn btn-secondary btn-sm" onclick="showCoverLetterModal('{{ app.cover_letter|escapejs }}')">View</button>
+                                        {% else %}
+                                            <span class="text-light">No Letter</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ app.get_status_display }}</td>
+                                    <td>{{ app.application_date|date:"Y-m-d H:i" }}</td>
+                                    <td>
+                                        <button class="btn btn-info btn-sm" onclick="showJobDetails({{ app.id }}, '{{ app.job.title|escapejs }}', '{{ app.job.description|escapejs }}', '{{ app.job.company_name|escapejs }}', '{{ app.job.location|escapejs }}', '{{ app.job.salary_range|escapejs }}')">View Job</button>
+                                        <button class="btn btn-danger btn-sm" onclick="confirmDelete({{ app.id }})">Delete</button>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">
+                                        <img src="{% static 'images/no-data.svg' %}" height="120">
+                                        <p class="text-muted">No job applications found.</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Job Details Modal -->
+<div class="modal fade" id="jobDetailsModal" tabindex="-1" aria-labelledby="jobDetailsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content text-white" style="background-color: #1c1c1c; border: 1px solid #333;">
+      <div class="modal-header border-bottom">
+        <h5 class="modal-title" id="jobDetailsModalLabel">Job Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h4 id="modalJobTitle" class="mb-3"></h4>
+        <p><strong>Company:</strong> <span id="modalCompany"></span></p>
+        <p><strong>Location:</strong> <span id="modalLocation"></span></p>
+        <p><strong>Salary Range:</strong> <span id="modalSalary"></span></p>
+        <hr class="bg-light">
+        <p id="modalDescription" style="white-space: pre-wrap;"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Cover Letter Modal -->
+<div class="modal fade" id="coverLetterModal" tabindex="-1" aria-labelledby="coverLetterModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content text-white" style="background-color: #1c1c1c; border: 1px solid #333;">
+      <div class="modal-header border-bottom">
+        <h5 class="modal-title" id="coverLetterModalLabel">Cover Letter</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="modalCoverLetterContent" style="white-space: pre-wrap;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- JS Dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    function confirmDelete(id) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to delete this application!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/delete-application/${id}/`;
+            }
+        });
+    }
+
+    function showJobDetails(id, title, description, company, location, salary) {
+        document.getElementById('modalJobTitle').textContent = title;
+        document.getElementById('modalDescription').textContent = description;
+        document.getElementById('modalCompany').textContent = company;
+        document.getElementById('modalLocation').textContent = location;
+        document.getElementById('modalSalary').textContent = salary;
+
+        const modal = new bootstrap.Modal(document.getElementById('jobDetailsModal'));
+        modal.show();
+    }
+
+    function showCoverLetterModal(content) {
+        document.getElementById('modalCoverLetterContent').textContent = content;
+        const modal = new bootstrap.Modal(document.getElementById('coverLetterModal'));
+        modal.show();
+    }
+
+    {% if messages %}
+        {% for message in messages %}
+            Swal.fire({
+                icon: '{{ message.tags }}',
+                title: '{{ message }}',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        {% endfor %}
+    {% endif %}
+</script>
+
+{% endblock %}

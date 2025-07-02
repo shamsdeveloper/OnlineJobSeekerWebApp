@@ -1,0 +1,49 @@
+{% extends 'User_Admin/base.html' %}
+{% load static %}
+{% block title %}User Management{% endblock %}
+{% block content %}
+
+<div class="container py-5" style="margin-left:140px; margin-top:-350px; width: calc(100% - 50px);"> 
+    <div class="row"> 
+        <div class="col-lg-12 col-md-12"> 
+            <div class="card shadow-lg border-0 rounded-lg" style="background-color: rgba(255, 255, 255, 0.85);"> 
+                <div class="card-header bg-dark text-white text-center py-4 rounded-top-lg" style="background-color: rgba(12, 12, 12, 0.9);">
+                    <h4 class="mb-0">User List</h4>
+                </div>
+                <div class="card-body p-4" style="background-color: rgb(32, 145, 145);">
+                    <div class="table-responsive" style="background-color: rgb(175, 101, 101);">
+                        <table class="table table-hover align-items-center mb-0">
+                            <thead class="bg-light" style="background-color: rgb(32, 145, 145);">
+                                <tr style="background-color: black;color: beige;">
+                                    <th scope="col" class="text-uppercase text-secondary text-xxs font-weight-bolder"style="background-color:black;color:white;font-weight:bold;border:2px solid white;">Username</th>
+                                    <th scope="col" class="text-uppercase text-secondary text-xxs font-weight-bolder"style="background-color:black;color:white;font-weight:bold;border:2px solid white;">Email</th>
+                                    <th scope="col" class="text-uppercase text-secondary text-xxs font-weight-bolder"style="background-color:black;color:white;font-weight:bold;border:2px solid white;">Role</th>
+                                    <th scope="col" class="text-uppercase text-secondary text-xxs font-weight-bolder"style="background-color:black;color:white;font-weight:bold;border:2px solid white;">Phone Number</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                <tr class="border-bottom"style="background-color:rgb(61, 9, 247);color:white;font-weight:bold;border:2px solid white;">
+                                    <td class="py-3" style="background-color:rgb(61, 9, 247);color:white;font-weight:bold;border:2px solid white;">{{ user.username }}</td>
+                                    <td class="py-3" style="background-color:rgb(61, 9, 247);color:white;font-weight:bold;border:2px solid white;">{{ user.email }}</td>
+                                    <td class="py-3" style="background-color:rgb(61, 9, 247);color:white;font-weight:bold;border:2px solid white;">{{ user.get_role_display }}</td>
+                                    <td class="py-3" style="background-color:rgb(61, 9, 247);color:white;font-weight:bold;border:2px solid white;">{{ user.phone_number|default:"Not Provided" }}</td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-5">
+                                        <img src="{% static 'images/no-data.svg' %}" alt="No users" height="120" class="mb-3">
+                                        <p class="text-muted fs-5">No users found.</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

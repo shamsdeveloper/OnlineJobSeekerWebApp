@@ -1,0 +1,84 @@
+{% extends 'Home/base.html' %}
+{% load static %}
+{% block title %}Login - Job Portal{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card p-4 shadow rounded-4">
+                <div class="card-body">
+                    <h3 class="text-center mb-4">Login to Your Account</h3>
+                    <form id="loginForm" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" name="username" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Login
+                            </button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>Don't have an account? <a href="/signup/">Register here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+
+        fetch(form.action || window.location.href, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Welcome!',
+                    text: data.message,
+                    confirmButtonText: 'Proceed'
+                }).then(() => {
+                    window.location.href = data.redirect_url;
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Failed',
+                    text: data.message
+                });
+            }
+        })
+        .catch(() => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error!',
+                text: 'Something went wrong. Try again.'
+            });
+        });
+    });
+</script>
+{% endblock %}

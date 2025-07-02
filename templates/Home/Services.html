@@ -1,0 +1,447 @@
+{% extends 'Home/base.html' %}
+{% load static %}
+{% block title %}Our Services - NextGen Job Portal{% endblock %}
+{% block content %}
+
+<!-- Services Hero Section -->
+<section class="services-hero bg-primary text-white py-5">
+  <div class="container py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-4 fw-bold mb-4">Powering <span class="text-warning">Smarter</span> Career Connections</h1>
+        <p class="lead mb-4">Discover how our innovative platform transforms the job search and hiring experience with cutting-edge technology</p>
+        <a href="#feature-cards" class="btn btn-light btn-lg rounded-pill px-4">Explore Features</a>
+      </div>
+      <div class="col-lg-6">
+        <img src="{% static 'Images/services-hero.png' %}" alt="Services Illustration" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Feature Cards Section -->
+<section id="feature-cards" class="py-5">
+  <div class="container py-5">
+    <div class="text-center mb-5">
+      <h2 class="display-5 fw-bold mb-3">Our <span class="text-primary">Comprehensive</span> Services</h2>
+      <p class="lead text-muted">Designed for job seekers, employers, and administrators</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- User Authentication Card -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-0 shadow-sm hover-scale">
+          <div class="card-header bg-primary text-white py-3">
+            <h3 class="h5 mb-0">User Authentication</h3>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-user-check text-primary me-3"></i>
+                Secure registration and login system
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-shield-alt text-primary me-3"></i>
+                Credential verification
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-users-cog text-primary me-3"></i>
+                Role-based access (Job Seeker, Employer, Admin)
+              </li>
+            </ul>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <a href="#" class="btn btn-outline-primary w-100">Learn More</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Job Seeker Features Card -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-0 shadow-sm hover-scale">
+          <div class="card-header bg-success text-white py-3">
+            <h3 class="h5 mb-0">Job Seeker Tools</h3>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-search text-success me-3"></i>
+                Advanced job search with filters
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-file-upload text-success me-3"></i>
+                Easy application with resume upload
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-vr-cardboard text-success me-3"></i>
+                Company virtual tours
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-bell text-success me-3"></i>
+                Real-time notifications
+              </li>
+            </ul>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <a href="#" class="btn btn-outline-success w-100">Explore Tools</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Employer Features Card -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-0 shadow-sm hover-scale">
+          <div class="card-header bg-info text-white py-3">
+            <h3 class="h5 mb-0">Employer Solutions</h3>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-briefcase text-info me-3"></i>
+                Create and manage job postings
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-users text-info me-3"></i>
+                View and manage applications
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-calendar-check text-info me-3"></i>
+                Schedule interviews
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-bell text-info me-3"></i>
+                Application notifications
+              </li>
+            </ul>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <a href="#" class="btn btn-outline-info w-100">Discover Solutions</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Admin Features Card -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-0 shadow-sm hover-scale">
+          <div class="card-header bg-warning text-dark py-3">
+            <h3 class="h5 mb-0">Admin Controls</h3>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-user-cog text-warning me-3"></i>
+                User management system
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-clipboard-list text-warning me-3"></i>
+                System activity monitoring
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-history text-warning me-3"></i>
+                Access to system logs
+              </li>
+            </ul>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <a href="#" class="btn btn-outline-warning w-100">View Controls</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI Chatbot Card -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-0 shadow-sm hover-scale">
+          <div class="card-header bg-danger text-white py-3">
+            <h3 class="h5 mb-0">AI Chatbot Assistance</h3>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-robot text-danger me-3"></i>
+                24/7 intelligent assistance
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-lightbulb text-danger me-3"></i>
+                Personalized job recommendations
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-user-tie text-danger me-3"></i>
+                Candidate matching for employers
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-comments text-danger me-3"></i>
+                Real-time question answering
+              </li>
+            </ul>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <a href="#" class="btn btn-outline-danger w-100">Try Chatbot</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Security Features Card -->
+      <div class="col-lg-4 col-md-6">
+        <div class="card h-100 border-0 shadow-sm hover-scale">
+          <div class="card-header bg-dark text-white py-3">
+            <h3 class="h5 mb-0">Security & Logout</h3>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-lock text-dark me-3"></i>
+                Secure authentication
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-sign-out-alt text-dark me-3"></i>
+                Safe logout from all devices
+              </li>
+              <li class="list-group-item d-flex align-items-center">
+                <i class="fas fa-clock text-dark me-3"></i>
+                Session timeout protection
+              </li>
+            </ul>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <a href="#" class="btn btn-outline-dark w-100">Security Info</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="bg-light py-5">
+  <div class="container py-5">
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <img src="{% static 'Images/service-process.png' %}" alt="Service Process" class="img-fluid rounded shadow">
+      </div>
+      <div class="col-lg-6">
+        <h2 class="display-5 fw-bold mb-4">How Our <span class="text-primary">Services Work</span></h2>
+        
+        <div class="d-flex mb-4">
+          <div class="flex-shrink-0">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+              <span class="h5 mb-0">1</span>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h5 class="mt-0">Sign Up & Complete Profile</h5>
+            <p>Create your account and fill in your details based on your role (job seeker or employer).</p>
+          </div>
+        </div>
+        
+        <div class="d-flex mb-4">
+          <div class="flex-shrink-0">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+              <span class="h5 mb-0">2</span>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h5 class="mt-0">Access Tailored Features</h5>
+            <p>Job seekers can search and apply for jobs, while employers can post opportunities and review candidates.</p>
+          </div>
+        </div>
+        
+        <div class="d-flex mb-4">
+          <div class="flex-shrink-0">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+              <span class="h5 mb-0">3</span>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h5 class="mt-0">Leverage AI Assistance</h5>
+            <p>Our chatbot helps guide you through processes and provides intelligent recommendations.</p>
+          </div>
+        </div>
+        
+        <div class="d-flex">
+          <div class="flex-shrink-0">
+            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+              <span class="h5 mb-0">4</span>
+            </div>
+          </div>
+          <div class="flex-grow-1 ms-3">
+            <h5 class="mt-0">Achieve Your Goals</h5>
+            <p>Find your dream job or the perfect candidate with our comprehensive platform.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5 bg-primary text-white">
+  <div class="container py-5">
+    <h2 class="display-5 fw-bold text-center mb-5">What Our <span class="text-warning">Users Say</span></h2>
+    
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 bg-primary-dark border-0">
+          <div class="card-body">
+            <div class="mb-4">
+              <i class="fas fa-quote-left fa-2x opacity-25"></i>
+            </div>
+            <p class="lead mb-4">"The AI chatbot helped me find jobs perfectly matched to my skills. I got 3 interviews in my first week!"</p>
+            <div class="d-flex align-items-center">
+              <img src="{% static 'images/testimonial1.jpg' %}" class="rounded-circle me-3" width="50" alt="Sarah J.">
+              <div>
+                <h6 class="mb-0">Sarah J.</h6>
+                <small class="text-white-50">Software Developer</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card h-100 bg-primary-dark border-0">
+          <div class="card-body">
+            <div class="mb-4">
+              <i class="fas fa-quote-left fa-2x opacity-25"></i>
+            </div>
+            <p class="lead mb-4">"Posting jobs and reviewing applicants has never been easier. The candidate matching is incredibly accurate."</p>
+            <div class="d-flex align-items-center">
+              <img src="{% static 'images/testimonial2.jpg' %}" class="rounded-circle me-3" width="50" alt="Michael T.">
+              <div>
+                <h6 class="mb-0">Michael T.</h6>
+                <small class="text-white-50">HR Manager</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card h-100 bg-primary-dark border-0">
+          <div class="card-body">
+            <div class="mb-4">
+              <i class="fas fa-quote-left fa-2x opacity-25"></i>
+            </div>
+            <p class="lead mb-4">"The virtual company tours gave me such valuable insight before applying. It helped me find the perfect culture fit."</p>
+            <div class="d-flex align-items-center">
+              <img src="{% static 'Images/testimonial3.jpg' %}" class="rounded-circle me-3" width="50" alt="Priya K.">
+              <div>
+                <h6 class="mb-0">Priya K.</h6>
+                <small class="text-white-50">Marketing Specialist</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-dark text-white">
+  <div class="container py-5 text-center">
+    <h2 class="display-5 fw-bold mb-4">Ready to Transform Your <span class="text-primary">Career Journey</span>?</h2>
+    <p class="lead mb-5">Join thousands of professionals and companies using our platform to make better connections</p>
+    <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+      <a href="{% url 'signup' %}" class="btn btn-primary btn-lg px-4">Sign Up Free</a>
+      <a href="{% url 'contact' %}" class="btn btn-outline-light btn-lg px-4">Contact Us</a>
+    </div>
+  </div>
+</section>
+<br>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Hero Section */
+  .services-hero {
+    background: linear-gradient(135deg, #3a86ff 0%, #2667cc 100%);
+    padding-top: 80px;
+  }
+  
+  /* Card Hover Effect */
+  .hover-scale {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .hover-scale:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1) !important;
+  }
+  
+  /* Card Header Colors */
+  .card-header.bg-primary {
+    background: linear-gradient(135deg, #3a86ff 0%, #2667cc 100%) !important;
+  }
+  
+  .card-header.bg-success {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%) !important;
+  }
+  
+  .card-header.bg-info {
+    background: linear-gradient(135deg, #17a2b8 0%, #117a8b 100%) !important;
+  }
+  
+  .card-header.bg-warning {
+    background: linear-gradient(135deg, #ffc107 0%, #d39e00 100%) !important;
+  }
+  
+  .card-header.bg-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%) !important;
+  }
+  
+  .card-header.bg-dark {
+    background: linear-gradient(135deg, #343a40 0%, #1d2124 100%) !important;
+  }
+  
+  /* Primary Dark */
+  .bg-primary-dark {
+    background-color: #2667cc !important;
+  }
+  
+  /* List Group Items */
+  .list-group-item {
+    border-left: 0;
+    border-right: 0;
+    padding: 1rem 0;
+  }
+  
+  .list-group-item:first-child {
+    border-top: 0;
+  }
+  
+  .list-group-item:last-child {
+    border-bottom: 0;
+  }
+  
+  /* How It Works Section */
+  .bg-light {
+    background-color: #f8f9fa !important;
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Font Awesome -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+<script>
+  // Add animation to cards on scroll
+  document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.hover-scale');
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate__animated', 'animate__fadeInUp');
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
+    
+    cards.forEach(card => {
+      observer.observe(card);
+    });
+  });
+</script>
+{% endblock %}
