@@ -7,3 +7,4 @@ tzdata                       # Time zone support on Windows
 django-crispy-forms         # For improved form rendering
 crispy-bootstrap5           # If you're using Bootstrap 5 with crispy-forms
 gunicorn
+pip install Pillow
