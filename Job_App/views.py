@@ -35,6 +35,7 @@ from .models import JobApplication
 from .models import Company
 import pandas as pd
 import json
+from PIL import Image
 ############################################################################################################
 def My_Home(request):
     return render(request, 'Home/index.html')
